@@ -1,0 +1,6 @@
+target/
+
+# JDT
+.project
+.classpath
+.settings
