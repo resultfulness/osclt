@@ -48,11 +48,13 @@ public class App {
             maze_InputFormat
         );
 
-        for (int i = 0; i < maze_InputFormat.getFileWidth() * maze_InputFormat.getFileHeight(); i++) {
-            System.out.print(maze_InputFormat.getCharAt(i));
-            if (i % maze_InputFormat.getFileWidth() == maze_InputFormat.getFileWidth()-1)
-                System.out.println();
-        }
+        // for (int i = 0; i < maze_InputFormat.getFileWidth() * maze_InputFormat.getFileHeight(); i++) {
+        //     System.out.print(maze_InputFormat.getCharAt(i));
+        //     if (i % maze_InputFormat.getFileWidth() == maze_InputFormat.getFileWidth()-1)
+        //         System.out.println();
+        // }
+
+        MazeWindow mazeWindow = new MazeWindow(maze_InputFormat);
 
         // show here
 
