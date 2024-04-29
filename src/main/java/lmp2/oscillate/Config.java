@@ -62,8 +62,7 @@ public class Config {
 
     @Override
     public String toString() {
-        return String.format(
-            """
+        return String.format("""
             Config {
                 isInputFileBinary: %s,
                 inputFilePath: %s,
