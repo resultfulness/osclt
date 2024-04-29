@@ -34,7 +34,10 @@ public class App {
 
         Maze_InputFormat maze_InputFormat = new Maze_InputFormat();
         try {
-            mazeParser.parseInto(maze_InputFormat, config.getInputFilePath());
+            mazeParser.parseInto(
+                maze_InputFormat,
+                App.config.getInputFilePath()
+            );
         } catch (IOException | IllegalStateException e) {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
@@ -45,7 +48,7 @@ public class App {
             maze_InputFormat
         );
 
-        for (int i = 0; i < 513*513; i++) {
+        for (int i = 0; i < maze_InputFormat.getFileWidth() * maze_InputFormat.getFileHeight(); i++) {
             System.out.print(maze_InputFormat.getCharAt(i));
             if (i % maze_InputFormat.getFileWidth() == maze_InputFormat.getFileWidth()-1)
                 System.out.println();
