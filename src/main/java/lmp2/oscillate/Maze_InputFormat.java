@@ -1,5 +1,8 @@
 package lmp2.oscillate;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Maze_InputFormat {
     private int fileWidth;
     private int fileHeight;
@@ -7,6 +10,11 @@ public class Maze_InputFormat {
     private int endIndex;
     private int solutionOffset = -1;
     private boolean charMap[]; /* 'false' for wall, 'true' for path */
+
+    public static final char START = 'P';
+    public static final char END = 'K';
+    public static final char WALL = 'X';
+    public static final char PATH = ' ';
 
     Maze_InputFormat() {
     }
@@ -44,29 +52,29 @@ public class Maze_InputFormat {
 
     public char getCharAt(int index) throws IndexOutOfBoundsException {
         if (index == this.getStartIndex()) {
-            return 'P';
+            return Maze_InputFormat.START;
         } else if (index == this.getEndIndex()) {
-            return 'K';
+            return Maze_InputFormat.END;
         } else if (this.charMap[index] == false) {
-            return 'X';
+            return Maze_InputFormat.WALL;
         } else {
-            return ' ';
+            return Maze_InputFormat.PATH;
         }
     }
 
     public void mapCharAt(char c, int index)
     throws IllegalArgumentException, IndexOutOfBoundsException {
         switch (c) {
-            case 'X':
+            case Maze_InputFormat.WALL:
                 this.charMap[index] = false;
                 break;
-            case ' ':
+            case Maze_InputFormat.PATH:
                 this.charMap[index] = true;
                 break;
-            case 'P':
+            case Maze_InputFormat.START:
                 this.setStartIndex(index);
                 break;
-            case 'K':
+            case Maze_InputFormat.END:
                 this.setEndIndex(index);
                 break;
             default:

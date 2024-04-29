@@ -16,32 +16,25 @@ public class App {
         logger.log(Level.INFO, "app initialized");
 
         try {
-            config = new Config(args);
+            App.config = new Config(args);
         } catch (IllegalArgumentException e) {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
         }
         logger.log(Level.INFO, "loaded config:\n" + config);
 
-        MazeParser mazeParser = null;
-        try {
-            if (config.getIsInputFileBinary()) {
-                mazeParser = new BinaryMazeParser(config.getInputFilePath());
-            } else {
-                mazeParser = new RegularMazeParser(config.getInputFilePath());
-            }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            System.exit(1);
-        }
+        MazeParser mazeParser = App.config.getIsInputFileBinary()
+            ? new BinaryMazeParser()
+            : new RegularMazeParser();
         logger.log(
             Level.INFO,
-            "initialized parser of file " + config.getInputFilePath()
+            "initialized parser: file being parsed: " +
+            App.config.getInputFilePath()
         );
 
         Maze_InputFormat maze_InputFormat = new Maze_InputFormat();
         try {
-            mazeParser.parseInto(maze_InputFormat);
+            mazeParser.parseInto(maze_InputFormat, config.getInputFilePath());
         } catch (IOException | IllegalStateException e) {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
@@ -52,17 +45,17 @@ public class App {
             maze_InputFormat
         );
 
+        for (int i = 0; i < 513*513; i++) {
+            System.out.print(maze_InputFormat.getCharAt(i));
+            if (i % maze_InputFormat.getFileWidth() == maze_InputFormat.getFileWidth()-1)
+                System.out.println();
+        }
+
         // show here
 
         // Maze maze = new Maze();
         // mazeParser.parseInto(maze);
 
-        try {
-            mazeParser.freeResources();
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            System.exit(1);
-        }
         // solve and show solution here
     }
 }
