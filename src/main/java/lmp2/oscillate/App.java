@@ -1,6 +1,5 @@
 package lmp2.oscillate;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,9 +30,6 @@ public class App {
             } else {
                 mazeParser = new RegularMazeParser(config.getInputFilePath());
             }
-        } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            System.exit(1);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
@@ -46,7 +42,7 @@ public class App {
         Maze_InputFormat maze_InputFormat = new Maze_InputFormat();
         try {
             mazeParser.parseInto(maze_InputFormat);
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
         }
@@ -61,6 +57,12 @@ public class App {
         // Maze maze = new Maze();
         // mazeParser.parseInto(maze);
 
+        try {
+            mazeParser.freeResources();
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            System.exit(1);
+        }
         // solve and show solution here
     }
 }

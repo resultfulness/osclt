@@ -11,7 +11,8 @@ public class Maze_InputFormat {
     Maze_InputFormat() {
     }
 
-    public void initialise(int fileWidth, int fileHeight) throws IllegalArgumentException {
+    public void initialise(int fileWidth, int fileHeight)
+    throws IllegalArgumentException {
         this.setFileWidth(fileWidth);
         this.setFileHeight(fileHeight);
         this.charMap = new boolean[fileWidth * fileHeight];
@@ -95,7 +96,8 @@ public class Maze_InputFormat {
         return this.endIndex;
     }
 
-    private void setStartIndex(int startIndex) throws IndexOutOfBoundsException {
+    private void setStartIndex(int startIndex)
+    throws IndexOutOfBoundsException {
         if (!isIndexWithinMaze(startIndex)) {
             throw new IndexOutOfBoundsException("start index outside of maze");
         }

@@ -1,7 +1,6 @@
 package lmp2.oscillate.parser;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -13,11 +12,12 @@ public class RegularMazeParser extends MazeParser {
     private int fileLength;
     private boolean areResourcesFreed = false;
 
-    public RegularMazeParser(String inputFilePath)
-    throws IOException, FileNotFoundException {
+    public RegularMazeParser(String inputFilePath) throws IOException {
         reader = new BufferedReader(new FileReader(inputFilePath));
 
-        BufferedReader fileCharCounter = new BufferedReader(new FileReader(inputFilePath));
+        BufferedReader fileCharCounter = new BufferedReader(
+            new FileReader(inputFilePath)
+        );
         this.fileWidth = fileCharCounter.readLine().length();
         fileLength++;
         while (fileCharCounter.readLine() != null) {
@@ -30,7 +30,9 @@ public class RegularMazeParser extends MazeParser {
     public void parseInto(Maze_InputFormat maze_InputFormat)
     throws IOException, IllegalStateException {
         if (areResourcesFreed) {
-            throw new IllegalStateException("can't access input file: input file has been closed");
+            throw new IllegalStateException(
+                "can't access input file: input file has been closed"
+            );
         }
 
         maze_InputFormat.initialise(this.fileWidth, this.fileLength);
