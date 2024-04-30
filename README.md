@@ -13,12 +13,15 @@ mvn package
 
 ## running
 
+use `_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'`
+for nicer font
+
 from class files:
 ```bash
-java -cp target/classes lmp2.oscillate.App
+_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true' java -cp target/classes lmp2.oscillate.App
 ```
 
 from a jar file
 ```bash
-java -jar target/oscillate-VERSION.jar
+_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true' java -jar target/oscillate-VERSION.jar
 ```

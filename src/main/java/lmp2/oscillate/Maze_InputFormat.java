@@ -1,5 +1,7 @@
 package lmp2.oscillate;
 
+import java.util.ArrayList;
+
 public class Maze_InputFormat {
     private int fileWidth;
     private int fileHeight;

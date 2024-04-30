@@ -3,9 +3,13 @@ package lmp2.oscillate;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lmp2.oscillate.parser.MazeParser;
+
+import javax.swing.SwingUtilities;
+
 import lmp2.oscillate.parser.BinaryMazeParser;
+import lmp2.oscillate.parser.MazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
+import lmp2.oscillate.ui.AppWindow2;
 
 public class App {
     private static Config config;
@@ -67,6 +71,10 @@ public class App {
         }
 
         // show here
+        SwingUtilities.invokeLater(() -> {
+            AppWindow2 appWindow = new AppWindow2();
+            appWindow.displayMaze(maze_InputFormat);
+        });
 
         Maze maze = null;
         try {
