@@ -48,16 +48,39 @@ public class App {
             maze_InputFormat
         );
 
-        for (int i = 0; i < maze_InputFormat.getFileWidth() * maze_InputFormat.getFileHeight(); i++) {
+        logger.log(Level.INFO, "read maze:");
+        final int truncateAfter = 16;
+        for (int i = 0; i < maze_InputFormat.getFileSize(); i++) {
+            if (i > maze_InputFormat.getFileWidth() * truncateAfter) {
+                System.out.println(
+                    String.format(
+                        "\n+%s more lines...",
+                        maze_InputFormat.getFileHeight() - truncateAfter
+                    )
+                );
+                break;
+            }
             System.out.print(maze_InputFormat.getCharAt(i));
-            if (i % maze_InputFormat.getFileWidth() == maze_InputFormat.getFileWidth()-1)
+            if (i % maze_InputFormat.getFileWidth() ==
+                maze_InputFormat.getFileWidth() - 1
+            ) {
                 System.out.println();
+            }
         }
 
         // show here
 
-        // Maze maze = new Maze();
-        // mazeParser.parseInto(maze);
+        Maze maze = null;
+        try {
+            maze = Maze.fromInputFormat(maze_InputFormat);
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            System.exit(1);
+        }
+        logger.log(
+            Level.INFO,
+            "transformed input format maze into maze:\n" + maze
+        );
 
         // solve and show solution here
     }

@@ -1,20 +1,111 @@
 package lmp2.oscillate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Maze {
     private int width;
     private int height;
     private int startIndex;
     private int endIndex;
+    private int solutionOffset;
     private ArrayList<Cell> cells;
 
-    Maze(int width, int height, int startIndex, int endIndex) {
+    public static final byte NORTH_VALUE = 0b1000;
+    public static final byte EAST_VALUE = 0b0100;
+    public static final byte SOUTH_VALUE = 0b0010;
+    public static final byte WEST_VALUE = 0b0001;
+
+    Maze(
+        int width,
+        int height,
+        int solutionOffset
+    ) {
         this.setWidth(width);
         this.setHeight(height);
-        this.setStartIndex(startIndex);
-        this.setEndIndex(endIndex);
+        this.setSolutionOffset(solutionOffset);
         this.cells = new ArrayList<>(this.width * this.height);
+    }
+
+    public static Maze fromInputFormat(Maze_InputFormat maze_InputFormat)
+    throws IndexOutOfBoundsException, IllegalStateException {
+        Maze maze = new Maze(
+            maze_InputFormat.getMazeWidth(),
+            maze_InputFormat.getMazeHeight(),
+            maze_InputFormat.getSolutionOffset()
+        );
+
+        int fw = maze_InputFormat.getFileWidth();
+        int fh = maze_InputFormat.getFileHeight();
+
+        for (int i = 1; i < fh; i += 2) {
+            for (int j = 1; j < fw; j += 2) {
+                int cellIndex = i * fw + j;
+                char cell = maze_InputFormat.getCharAt(cellIndex);
+                if (cell != Maze_InputFormat.PATH) {
+                    throw new IllegalStateException(
+                        "maze in input format corrupted"
+                    );
+                }
+                char adjN = maze_InputFormat.getCharAt(cellIndex - fh);
+                char adjE = maze_InputFormat.getCharAt(cellIndex + 1);
+                char adjS = maze_InputFormat.getCharAt(cellIndex + fh);
+                char adjW = maze_InputFormat.getCharAt(cellIndex - 1);
+
+                byte cellAdjacencies = 0;
+                cellAdjacencies = Maze.cell_handle_adj(
+                    cellAdjacencies, adjN, NORTH_VALUE);
+                cellAdjacencies = Maze.cell_handle_adj(
+                    cellAdjacencies, adjE, EAST_VALUE);
+                cellAdjacencies = Maze.cell_handle_adj(
+                    cellAdjacencies, adjS, SOUTH_VALUE);
+                cellAdjacencies = Maze.cell_handle_adj(
+                    cellAdjacencies, adjW, WEST_VALUE);
+
+                if (Arrays
+                        .asList(adjN, adjE, adjS,  adjW)
+                        .contains(Maze_InputFormat.START)
+                ) {
+                    maze.setStartIndex(maze.getCellCount());
+                }
+                if (Arrays
+                        .asList(adjN, adjE, adjS,  adjW)
+                        .contains(Maze_InputFormat.END)
+                ) {
+                    maze.setEndIndex(maze.getCellCount());
+                }
+
+                maze.add(cellAdjacencies);
+            }
+        }
+
+        return maze;
+    }
+
+    private static byte cell_handle_adj(
+        byte cellAdjacencies,
+        char adj,
+        byte direction
+    ) {
+        if (!Arrays
+                .asList(NORTH_VALUE, EAST_VALUE, SOUTH_VALUE, WEST_VALUE)
+                .contains(direction)
+        ) {
+            throw new IllegalArgumentException("invalid direction");
+        }
+        if (adj == Maze_InputFormat.PATH) {
+            return (byte)(cellAdjacencies | direction);
+        }
+        if (Arrays
+                .asList(
+                    Maze_InputFormat.WALL,
+                    Maze_InputFormat.START,
+                    Maze_InputFormat.END
+                )
+                .contains(adj)) {
+            return cellAdjacencies;
+        }
+        throw new IllegalStateException("maze in input format corrupted");
     }
 
     public void add(byte adjacents) throws IndexOutOfBoundsException {
@@ -24,6 +115,12 @@ public class Maze {
             );
         }
         this.cells.add(new Cell(adjacents));
+    }
+
+    public void addMany(byte[] adjacents) throws IndexOutOfBoundsException {
+        for (byte adj : adjacents) {
+            this.add(adj);
+        }
     }
 
     private Cell get(int index) throws IndexOutOfBoundsException {
@@ -40,6 +137,10 @@ public class Maze {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public int getSize() {
+        return this.getWidth() * this.getHeight();
     }
 
     private void setWidth(int width) throws IllegalArgumentException {
@@ -101,21 +202,41 @@ public class Maze {
     }
 
     private boolean isIndexWithinMaze(int index) {
-        return index >= 0 && index < this.width * this.height;
+        return index >= 0 && index < this.getSize();
+    }
+
+    public int getSolutionOffset() {
+        return this.solutionOffset;
+    }
+
+    private void setSolutionOffset(int solutionOffset) {
+        this.solutionOffset = solutionOffset;
     }
 
     @Override
     public String toString() {
-        return String.format(
-            """
+        final int truncateAfter = 3;
+        return String.format("""
             Maze {
-                cells: %s,
                 width: %s,
                 height: %s,
                 startIndex: %s,
                 endIndex: %s,
+                solutionOffset: %s,
+                cells: \n%s,
             }\
-            """
+            """,
+            this.width,
+            this.height,
+            this.startIndex,
+            this.endIndex,
+            this.solutionOffset,
+            this.cells
+            .stream()
+            .limit(truncateAfter)
+            .collect(java.util.stream.Collectors.toList())
+            .toString() +
+            "\t+" + (this.cells.size() - truncateAfter) + " more..."
         );
     }
 
@@ -141,8 +262,7 @@ public class Maze {
 
         @Override
         public String toString() {
-            return String.format(
-                """
+            return String.format("""
                 Cell {
                     adjacents: %s,
                     parentIndex: %s,
