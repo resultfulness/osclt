@@ -12,15 +12,13 @@ public class App {
 
     public static void main(String[] args) {
         Logger logger = AppLogger.getLogger();
-
-        logger.log(Level.INFO, "app initialized");
-
         try {
             App.config = new Config(args);
         } catch (IllegalArgumentException e) {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
         }
+        logger.log(Level.INFO, "app initialized");
         logger.log(Level.INFO, "loaded config:\n" + config);
 
         MazeParser mazeParser = App.config.getIsInputFileBinary()
