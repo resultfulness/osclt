@@ -125,4 +125,8 @@ public class AppWindow2 {
                 break;
         }
     }
+
+    public JPanel getAppContainer(){
+        return this.appContainer;
+    }
 }

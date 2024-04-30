@@ -3,6 +3,9 @@ package lmp2.oscillate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import lmp2.oscillate.pathfinder.BFS;
+import lmp2.oscillate.pathfinder.PathFinder;
+
 public class Maze {
     private int width;
     private int height;
@@ -243,9 +246,11 @@ public class Maze {
     public class Cell {
         private byte adjacents;
         private int parentIndex;
+        private boolean visited;
 
         protected Cell(byte adjacents) {
             this.adjacents = adjacents;
+            this.visited = false;
         }
 
         protected byte getAdjacents() {
@@ -258,6 +263,16 @@ public class Maze {
 
         protected void setParentIndex(int parentIndex) {
             this.parentIndex = parentIndex;
+        }
+        
+        public boolean isVisited() {
+            return this.visited;
+        }
+
+        public void setVisited(boolean visited) {
+            if(this.visited)
+                return;
+            this.visited = visited;
         }
 
         @Override

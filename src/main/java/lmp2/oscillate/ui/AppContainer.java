@@ -1,16 +1,12 @@
 package lmp2.oscillate.ui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.*;
-import java.awt.*;
 
 import javax.swing.JPanel;
 
@@ -75,28 +71,33 @@ public class AppContainer extends JPanel {
         for (int i = 0; i < fh; i++) {
             for (int j = 0; j < fw; j++) {
                 int k = i * fw + j;
-                boolean isWall = window.m.getCharAt(k) == Maze_InputFormat.WALL;
-                if (isWall) {
-                    int w = window.getCellSize();
-                    int x = j * w;
-                    int y = i * w;
-                    g.setColor(Color.black);
-                    g.fillRect(x, y, w, w);
+                char mazeCharacter = window.m.getCharAt(k);
+                if(mazeCharacter == Maze_InputFormat.PATH)
+                    continue;
+
+                int w = window.getCellSize();
+                int x = j * w;
+                int y = i * w;
+                switch(mazeCharacter){
+                    case (Maze_InputFormat.END):
+                        g.setColor(Color.magenta);
+                        break;
+                    case (Maze_InputFormat.START):
+                        g.setColor(Color.cyan);
+                        break;
+                    case (Maze_InputFormat.WALL):
+                        g.setColor(Color.black);
+                        break;
+                    case (Maze_InputFormat.PATH_TRACE):
+                        g.setColor(Color.green);
+                        break;
+                    case (Maze_InputFormat.PATH_SOLUTION):
+                        g.setColor(Color.red);
+                        break;
                 }
+                g.fillRect(x, y, w, w);
             }
         }
-
-        int w = window.getCellSize();
-        int sX = window.m.getFileStartIndex() % fw;
-        int sY = window.m.getFileStartIndex() / fw;
-        int eX = window.m.getFileEndIndex() % fw;
-        int eY = window.m.getFileEndIndex() / fw;
-
-        g.setColor(Color.cyan);
-        g.fillRect(sX * w, sY * w, w, w);
-
-        g.setColor(Color.magenta);
-        g.fillRect(eX * w, eY * w, w, w);
 
         // highlight available editable cells
         switch (window.getSelectedTool()) {

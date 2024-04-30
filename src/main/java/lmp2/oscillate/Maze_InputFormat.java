@@ -1,19 +1,19 @@
 package lmp2.oscillate;
 
-import java.util.ArrayList;
-
 public class Maze_InputFormat {
     private int fileWidth;
     private int fileHeight;
     private int fileStartIndex;
     private int fileEndIndex;
     private int solutionOffset = -1;
-    private boolean charMap[]; /* 'false' for wall, 'true' for path */
+    private byte charMap[]; /* 0 for wall, 1 for path, 2 for path_trace, 3 for path_solution */
 
     public static final char START = 'P';
     public static final char END = 'K';
     public static final char WALL = 'X';
     public static final char PATH = ' ';
+    public static final char PATH_TRACE = 'O';
+    public static final char PATH_SOLUTION = 'S';
 
     Maze_InputFormat() {
     }
@@ -22,7 +22,7 @@ public class Maze_InputFormat {
     throws IllegalArgumentException {
         this.setFileWidth(fileWidth);
         this.setFileHeight(fileHeight);
-        this.charMap = new boolean[fileWidth * fileHeight];
+        this.charMap = new byte[fileWidth * fileHeight];
     }
 
     public int getFileWidth() {
@@ -52,6 +52,10 @@ public class Maze_InputFormat {
     public int getSolutionOffset() {
         return this.solutionOffset;
     }
+    
+    public int getInputIndexFromMazeIndex(int mazeIndex) {
+        return ((mazeIndex / getMazeWidth()) * 2 + 1) * fileWidth + (mazeIndex % getMazeWidth() * 2 + 1);
+    }
 
     public void setSolutionOffset(int solutionOffset) {
         this.solutionOffset = solutionOffset;
@@ -62,10 +66,14 @@ public class Maze_InputFormat {
             return Maze_InputFormat.START;
         } else if (index == this.getFileEndIndex()) {
             return Maze_InputFormat.END;
-        } else if (this.charMap[index] == false) {
+        } else if (this.charMap[index] == 0) {
             return Maze_InputFormat.WALL;
-        } else {
+        } else if (this.charMap[index] == 1){
             return Maze_InputFormat.PATH;
+        } else if (this.charMap[index] == 2){
+            return Maze_InputFormat.PATH_TRACE;
+        } else {
+            return Maze_InputFormat.PATH_SOLUTION;
         }
     }
 
@@ -73,16 +81,22 @@ public class Maze_InputFormat {
     throws IllegalArgumentException, IndexOutOfBoundsException {
         switch (c) {
             case Maze_InputFormat.WALL:
-                this.charMap[index] = false;
+                this.charMap[index] = 0;
                 break;
             case Maze_InputFormat.PATH:
-                this.charMap[index] = true;
+                this.charMap[index] = 1;
                 break;
             case Maze_InputFormat.START:
                 this.setFileStartIndex(index);
                 break;
             case Maze_InputFormat.END:
                 this.setFileEndIndex(index);
+                break;
+            case Maze_InputFormat.PATH_TRACE:
+                this.charMap[index] = 2;
+                break;
+            case Maze_InputFormat.PATH_SOLUTION:
+                this.charMap[index] = 3;
                 break;
             default:
                 throw new IllegalArgumentException("invalid character");
