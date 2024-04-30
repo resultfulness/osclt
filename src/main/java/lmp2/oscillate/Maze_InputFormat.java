@@ -1,13 +1,10 @@
 package lmp2.oscillate;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class Maze_InputFormat {
     private int fileWidth;
     private int fileHeight;
-    private int startIndex;
-    private int endIndex;
+    private int fileStartIndex;
+    private int fileEndIndex;
     private int solutionOffset = -1;
     private boolean charMap[]; /* 'false' for wall, 'true' for path */
 
@@ -34,12 +31,20 @@ public class Maze_InputFormat {
         return this.fileHeight;
     }
 
+    public int getFileSize() {
+        return this.getFileWidth() * this.getFileHeight();
+    }
+
     public int getMazeWidth() {
         return (this.fileWidth - 1) / 2;
     }
 
     public int getMazeHeight() {
         return (this.fileHeight - 1) / 2;
+    }
+
+    public int getMazeSize() {
+        return this.getMazeWidth() * this.getMazeHeight();
     }
     
     public int getSolutionOffset() {
@@ -51,9 +56,9 @@ public class Maze_InputFormat {
     }
 
     public char getCharAt(int index) throws IndexOutOfBoundsException {
-        if (index == this.getStartIndex()) {
+        if (index == this.getFileStartIndex()) {
             return Maze_InputFormat.START;
-        } else if (index == this.getEndIndex()) {
+        } else if (index == this.getFileEndIndex()) {
             return Maze_InputFormat.END;
         } else if (this.charMap[index] == false) {
             return Maze_InputFormat.WALL;
@@ -72,10 +77,10 @@ public class Maze_InputFormat {
                 this.charMap[index] = true;
                 break;
             case Maze_InputFormat.START:
-                this.setStartIndex(index);
+                this.setFileStartIndex(index);
                 break;
             case Maze_InputFormat.END:
-                this.setEndIndex(index);
+                this.setFileEndIndex(index);
                 break;
             default:
                 throw new IllegalArgumentException("invalid character");
@@ -96,31 +101,31 @@ public class Maze_InputFormat {
         this.fileHeight = height;
     }
 
-    public int getStartIndex() {
-        return this.startIndex;
+    public int getFileStartIndex() {
+        return this.fileStartIndex;
     }
 
-    public int getEndIndex() {
-        return this.endIndex;
+    public int getFileEndIndex() {
+        return this.fileEndIndex;
     }
 
-    private void setStartIndex(int startIndex)
+    private void setFileStartIndex(int startIndex)
     throws IndexOutOfBoundsException {
         if (!isIndexWithinMaze(startIndex)) {
             throw new IndexOutOfBoundsException("start index outside of maze");
         }
-        this.startIndex = startIndex;
+        this.fileStartIndex = startIndex;
     }
 
-    private void setEndIndex(int endIndex) throws IndexOutOfBoundsException {
+    private void setFileEndIndex(int endIndex) throws IndexOutOfBoundsException {
         if (!isIndexWithinMaze(endIndex)) {
             throw new IndexOutOfBoundsException("end index outside of maze");
         }
-        this.endIndex = endIndex;
+        this.fileEndIndex = endIndex;
     }
 
     private boolean isIndexWithinMaze(int index) {
-        return index >= 0 && index < this.fileWidth * this.fileHeight;
+        return index >= 0 && index < this.getFileSize();
     }
 
     @Override
@@ -137,8 +142,8 @@ public class Maze_InputFormat {
             """,
             this.fileWidth,
             this.fileHeight,
-            this.startIndex,
-            this.endIndex,
+            this.fileStartIndex,
+            this.fileEndIndex,
             this.charMap.length,
             this.solutionOffset
         );
