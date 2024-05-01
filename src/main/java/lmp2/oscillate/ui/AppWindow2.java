@@ -47,7 +47,7 @@ public class AppWindow2 {
         this.m = m;
         this.appFrame.setVisible(true);
 
-        this.appContainer = new AppContainer(this);
+        this.appContainer = new AppContainer(this, m);
         this.appSPContainer = new JScrollPane(this.appContainer);
         this.appSPContainer.setHorizontalScrollBarPolicy(
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
