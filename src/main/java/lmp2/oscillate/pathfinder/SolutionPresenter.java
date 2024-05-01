@@ -17,10 +17,10 @@ public class SolutionPresenter {
             int offsetBetween = (maze_inputFormat.getInputIndexFromMazeIndex(currentIndex) - maze_inputFormat.getInputIndexFromMazeIndex(previousIndex)) / 2;
             maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_SOLUTION, maze_inputFormat.getInputIndexFromMazeIndex(previousIndex));
             try {
-                Thread.sleep(50);
+                Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
                 appWindow.getAppContainer().repaint();
+                Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
                 maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_SOLUTION, maze_inputFormat.getInputIndexFromMazeIndex(previousIndex) + offsetBetween);
-                Thread.sleep(50);
                 appWindow.getAppContainer().repaint();
             } catch (InterruptedException ex) {
                 ex.printStackTrace();

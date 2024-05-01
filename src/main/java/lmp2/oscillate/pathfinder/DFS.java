@@ -1,32 +1,29 @@
 package lmp2.oscillate.pathfinder;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Stack;
 
 import lmp2.oscillate.Maze;
-import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.Maze.Cell;
+import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.ui.AppWindow2;
 
-public final class BFS extends PathFinder {
-    private Queue<Integer> solveQueue;
+public final class DFS extends PathFinder {
+    private Stack<Integer> solveStack;
     private Maze maze;
     private Maze_InputFormat maze_inputFormat;
 
-    public BFS() {
-
-    }
-
+    
     @Override
-    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow2 appWindow) throws IllegalStateException {
+    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow2 appWindow)
+            throws IllegalStateException {
         this.maze = maze;
         this.maze_inputFormat = maze_inputFormat;
-        this.solveQueue = new LinkedList<Integer>();
-        this.solveQueue.add(this.maze.getStartIndex());
-        Cell currentCell;
+        this.solveStack = new Stack<Integer>();
+        this.solveStack.push(maze.getStartIndex());
+        
         do{
-            Integer currentIndex = this.solveQueue.remove();
-            currentCell = this.maze.get(currentIndex);
+            Integer currentIndex = this.solveStack.pop();
+            Cell currentCell = this.maze.get(currentIndex);
             currentCell.setVisited(true);
             this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(currentIndex));
             if(processAdjacent(currentIndex, Maze.NORTH_VALUE))
@@ -43,13 +40,12 @@ public final class BFS extends PathFinder {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-        } while(!this.solveQueue.isEmpty());
+        } while(!this.solveStack.isEmpty());
         appWindow.getAppContainer().repaint();
-        if(this.solveQueue.isEmpty())
+        if(this.solveStack.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
     }
     
-    // Returns true if processed cell is end cell
     private boolean processAdjacent(int cellIndex, byte direction) {
         Cell adjacentCell;
         byte adjacents = maze.getAdjacentsAt(cellIndex);
@@ -76,7 +72,7 @@ public final class BFS extends PathFinder {
                 return false;
             }
             if(!adjacentCell.isVisited()){
-                solveQueue.add(cellIndex + offset);
+                solveStack.add(cellIndex + offset);
                 maze.setParentIndexAt(cellIndex + offset, cellIndex);
                 int offsetBetween = (this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex + offset) - this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex)) / 2;
                 this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex + offset));

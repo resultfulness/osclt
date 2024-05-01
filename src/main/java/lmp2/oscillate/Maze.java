@@ -3,9 +3,6 @@ package lmp2.oscillate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import lmp2.oscillate.pathfinder.BFS;
-import lmp2.oscillate.pathfinder.PathFinder;
-
 public class Maze {
     private int width;
     private int height;
@@ -126,7 +123,7 @@ public class Maze {
         }
     }
 
-    private Cell get(int index) throws IndexOutOfBoundsException {
+    public Cell get(int index) throws IndexOutOfBoundsException {
         return this.cells.get(index);
     }
 
