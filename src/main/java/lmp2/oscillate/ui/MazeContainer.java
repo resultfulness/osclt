@@ -13,11 +13,11 @@ import javax.swing.JPanel;
 import lmp2.oscillate.AppLogger;
 import lmp2.oscillate.Maze_InputFormat;
 
-public class AppContainer extends JPanel {
-    private AppWindow2 window;
+public class MazeContainer extends JPanel {
+    private AppWindow window;
     private Maze_InputFormat maze_inputFormat;
 
-    public AppContainer(AppWindow2 window, Maze_InputFormat maze_inputFormat) {
+    public MazeContainer(AppWindow window, Maze_InputFormat maze_inputFormat) {
         this.window = window;
         this.maze_inputFormat = maze_inputFormat;
         this.addMouseListener(new MouseAdapter() {
@@ -49,6 +49,7 @@ public class AppContainer extends JPanel {
                 // handle using tools on cells
                 switch (window.getSelectedTool()) {
                     case NONE:
+                        break;
                     case PATH:
                         if(!maze_inputFormat.canBePath(cellXY))
                             break;

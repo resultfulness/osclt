@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.MazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
-import lmp2.oscillate.ui.AppWindow2;
+import lmp2.oscillate.ui.AppWindow;
 
 public class App {
     private static Config config;
@@ -72,7 +72,7 @@ public class App {
 
         // show here
         SwingUtilities.invokeLater(() -> {
-            AppWindow2 appWindow = new AppWindow2();
+            AppWindow appWindow = new AppWindow();
             appWindow.displayMaze(maze_InputFormat);
         });
 
