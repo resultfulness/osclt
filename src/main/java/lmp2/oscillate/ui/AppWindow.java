@@ -1,6 +1,8 @@
 package lmp2.oscillate.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -9,7 +11,7 @@ import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
 
-public class AppWindow {
+public class AppWindow implements ActionListener {
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
     private static final int MIN_CELL_SIZE = 1;
@@ -22,6 +24,7 @@ public class AppWindow {
     private JPanel statusPanel;
     private JLabel statusLabel;
     private ToolSelector toolSelector;
+    private JButton solveButton;
 
     protected static enum Tool {
         NONE,
@@ -64,15 +67,26 @@ public class AppWindow {
         this.statusLabel = new JLabel();
         this.statusLabel.setHorizontalAlignment(JLabel.LEFT);
         this.statusPanel.add(statusLabel);
+
         this.appFrame.getContentPane().add(
             this.statusPanel, BorderLayout.NORTH
         );
+
         MazeInputField mazeInputField = new MazeInputField(this);
         this.statusPanel.add(mazeInputField);
+
         this.toolSelector = new ToolSelector();
         this.statusPanel.add(toolSelector);
+
         ZoomUtility zoomUtility = new ZoomUtility(this);
         this.statusPanel.add(zoomUtility);
+
+        AlgorithmSelectionField algSelector = new AlgorithmSelectionField();
+        this.statusPanel.add(algSelector);
+
+        this.solveButton = new JButton("Solve maze");
+        this.solveButton.addActionListener(this);
+        this.statusPanel.add(solveButton);
     }
 
     public int getCellSize() {
@@ -113,5 +127,12 @@ public class AppWindow {
             } catch (IllegalStateException ex) {
                 // Handle error
             }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        if(event.getSource() == this.solveButton)
+            // Solve here
+            throw new UnsupportedOperationException();
     }
 }
