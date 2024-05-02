@@ -1,10 +1,13 @@
 package lmp2.oscillate.ui;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
 
 import javax.swing.*;
 
 import lmp2.oscillate.Maze_InputFormat;
+import lmp2.oscillate.parser.BinaryMazeParser;
+import lmp2.oscillate.parser.RegularMazeParser;
 
 public class AppWindow {
     private static final int WINDOW_WIDTH = 800;
@@ -64,7 +67,7 @@ public class AppWindow {
         this.appFrame.getContentPane().add(
             this.statusPanel, BorderLayout.NORTH
         );
-        MazeInputField mazeInputField = new MazeInputField();
+        MazeInputField mazeInputField = new MazeInputField(this);
         this.statusPanel.add(mazeInputField);
         this.toolSelector = new ToolSelector();
         this.statusPanel.add(toolSelector);
@@ -88,5 +91,27 @@ public class AppWindow {
 
     public AppWindow.Tool getSelectedTool() {
         return this.toolSelector.getSelectedTool();
+    }
+
+    public void loadMaze(String inputFilePath, boolean isInputBinary) { 
+        if(isInputBinary) {
+            try {
+                new BinaryMazeParser().parseInto(m, inputFilePath);
+                mazeContainer.repaint();
+            } catch (IOException ex) {
+                // Handle error
+            } catch (IllegalStateException ex) {
+                // Handle error
+            }
+        }
+        else
+            try {
+                new RegularMazeParser().parseInto(m, inputFilePath);
+                mazeContainer.repaint();
+            } catch (IOException ex) {
+                // Handle error
+            } catch (IllegalStateException ex) {
+                // Handle error
+            }
     }
 }

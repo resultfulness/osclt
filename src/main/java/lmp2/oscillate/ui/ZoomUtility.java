@@ -15,6 +15,11 @@ public class ZoomUtility extends JPanel implements ActionListener {
     public ZoomUtility(AppWindow appWindow) {
         super(new FlowLayout());
         this.appWindow = appWindow;
+
+        initComponent();
+    }
+
+    private void initComponent() {
         this.zoomInButton = new JButton("Zoom in");
         this.zoomOutButton = new JButton("Zoom out");
         this.add(zoomInButton);
@@ -26,8 +31,16 @@ public class ZoomUtility extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         if(event.getSource() == zoomInButton)
-            appWindow.setCellSize(appWindow.getCellSize() + 1);
+            try {
+                appWindow.setCellSize(appWindow.getCellSize() + 1);
+            } catch (IllegalArgumentException ex) {
+
+            }
         else
-            appWindow.setCellSize(appWindow.getCellSize() - 1);
+            try {
+                appWindow.setCellSize(appWindow.getCellSize() - 1);
+            } catch (IllegalArgumentException ex) {
+
+            }
     }
 }
