@@ -52,6 +52,10 @@ public class Maze_InputFormat {
     public int getSolutionOffset() {
         return this.solutionOffset;
     }
+    
+    public int getInputIndexFromMazeIndex(int mazeIndex) {
+        return ((mazeIndex / getMazeWidth()) * 2 + 1) * fileWidth + (mazeIndex % getMazeWidth() * 2 + 1);
+    }
 
     public void setSolutionOffset(int solutionOffset) {
         this.solutionOffset = solutionOffset;

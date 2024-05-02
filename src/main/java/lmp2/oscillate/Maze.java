@@ -123,7 +123,7 @@ public class Maze {
         }
     }
 
-    private Cell get(int index) throws IndexOutOfBoundsException {
+    public Cell get(int index) throws IndexOutOfBoundsException {
         return this.cells.get(index);
     }
 
@@ -243,9 +243,11 @@ public class Maze {
     public class Cell {
         private byte adjacents;
         private int parentIndex;
+        private boolean visited;
 
         protected Cell(byte adjacents) {
             this.adjacents = adjacents;
+            this.visited = false;
         }
 
         protected byte getAdjacents() {
@@ -258,6 +260,16 @@ public class Maze {
 
         protected void setParentIndex(int parentIndex) {
             this.parentIndex = parentIndex;
+        }
+        
+        public boolean isVisited() {
+            return this.visited;
+        }
+
+        public void setVisited(boolean visited) {
+            if(this.visited)
+                return;
+            this.visited = visited;
         }
 
         @Override
