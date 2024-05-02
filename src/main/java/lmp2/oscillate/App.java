@@ -12,7 +12,7 @@ import lmp2.oscillate.parser.RegularMazeParser;
 import lmp2.oscillate.ui.AppWindow;
 
 public class App {
-    private static Config config;
+    public static Config config;
 
     public static void main(String[] args) {
         Logger logger = AppLogger.getLogger();

@@ -4,9 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
+import lmp2.oscillate.AppLogger;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
@@ -72,8 +80,8 @@ public class AppWindow implements ActionListener {
             this.statusPanel, BorderLayout.NORTH
         );
 
-        MazeInputField mazeInputField = new MazeInputField(this);
-        this.statusPanel.add(mazeInputField);
+        MazeFilePicker mazeFilePicker = new MazeFilePicker(this);
+        this.statusPanel.add(mazeFilePicker);
 
         this.toolSelector = new ToolSelector();
         this.statusPanel.add(toolSelector);
@@ -101,6 +109,8 @@ public class AppWindow implements ActionListener {
         }
         this.cellSize = cellSize;
         this.appFrame.repaint();
+        // notify scrollpane about zoom change
+        this.mazeContainer.revalidate();
     }
 
     public AppWindow.Tool getSelectedTool() {
@@ -108,24 +118,24 @@ public class AppWindow implements ActionListener {
     }
 
     public void loadMaze(String inputFilePath, boolean isInputBinary) { 
+        Logger logger = AppLogger.getLogger();
+
         if(isInputBinary) {
             try {
                 new BinaryMazeParser().parseInto(m, inputFilePath);
                 mazeContainer.repaint();
-            } catch (IOException ex) {
-                // Handle error
-            } catch (IllegalStateException ex) {
-                // Handle error
+            } catch (IOException | IllegalStateException ex) {
+                logger.log(Level.SEVERE, ex.getMessage());
+                System.exit(1);
             }
         }
         else
             try {
                 new RegularMazeParser().parseInto(m, inputFilePath);
                 mazeContainer.repaint();
-            } catch (IOException ex) {
-                // Handle error
-            } catch (IllegalStateException ex) {
-                // Handle error
+            } catch (IOException | IllegalStateException ex) {
+                logger.log(Level.SEVERE, ex.getMessage());
+                System.exit(1);
             }
     }
 

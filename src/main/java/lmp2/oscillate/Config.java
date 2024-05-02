@@ -56,6 +56,10 @@ public class Config {
         return this.isInputFileBinary;
     }
 
+    public void setInputFileBinary(boolean isInputFileBinary) {
+        this.isInputFileBinary = isInputFileBinary;
+    }
+
     public String getInputFilePath() {
         return this.inputFilePath;
     }
