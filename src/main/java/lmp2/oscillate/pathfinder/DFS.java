@@ -5,7 +5,7 @@ import java.util.Stack;
 import lmp2.oscillate.Maze;
 import lmp2.oscillate.Maze.Cell;
 import lmp2.oscillate.Maze_InputFormat;
-import lmp2.oscillate.ui.AppWindow2;
+import lmp2.oscillate.ui.AppWindow;
 
 public final class DFS extends PathFinder {
     private Stack<Integer> solveStack;
@@ -14,7 +14,7 @@ public final class DFS extends PathFinder {
 
     
     @Override
-    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow2 appWindow)
+    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow appWindow)
             throws IllegalStateException {
         this.maze = maze;
         this.maze_inputFormat = maze_inputFormat;
@@ -34,14 +34,14 @@ public final class DFS extends PathFinder {
                 break;
             if(processAdjacent(currentIndex, Maze.WEST_VALUE))
                 break;
-            appWindow.getAppContainer().repaint();
+            appWindow.getMazeContainer().repaint();
             try{
                 Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         } while(!this.solveStack.isEmpty());
-        appWindow.getAppContainer().repaint();
+        appWindow.getMazeContainer().repaint();
         if(this.solveStack.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
     }

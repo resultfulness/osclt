@@ -4,16 +4,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
 
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.MazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
 
 import lmp2.oscillate.ui.AppWindow;
-import lmp2.oscillate.pathfinder.BFS;
-import lmp2.oscillate.pathfinder.PathFinder;
-import lmp2.oscillate.pathfinder.SolutionPresenter;
 
 public class App {
     private static Config config;
@@ -89,22 +85,6 @@ public class App {
             Level.INFO,
             "transformed input format maze into maze:\n" + maze
         );
-
-        // solve and show solution here
-        
-        PathFinder pathfinder = new BFS();
-        boolean ret;
-        try{
-            pathfinder.solveMaze(maze, maze_InputFormat, appWindow);
-            ret = true;
-        } catch (IllegalStateException e) {
-            ret = false;
-        }
-        logger.log(
-            Level.INFO, 
-            "Maze was solved with return " + ret + " giving structure:\n" + maze);
-        
-        SolutionPresenter solutionPresenter = new SolutionPresenter();
-        solutionPresenter.showSolution(maze, maze_InputFormat, appWindow);
+        appWindow.setMaze(maze);
     }
 }

@@ -4,12 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.swing.*;
 
+import lmp2.oscillate.Maze;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
+import lmp2.oscillate.pathfinder.BFS;
+import lmp2.oscillate.pathfinder.DFS;
+import lmp2.oscillate.pathfinder.PathFinder;
+import lmp2.oscillate.pathfinder.SolutionPresenter;
 
 public class AppWindow implements ActionListener {
     private static final int WINDOW_WIDTH = 800;
@@ -25,6 +31,11 @@ public class AppWindow implements ActionListener {
     private JLabel statusLabel;
     private ToolSelector toolSelector;
     private JButton solveButton;
+    AlgorithmSelectionField algSelector;
+
+    private SolutionPresenter solutionPresenter;
+    private PathFinder pathFinder;
+    private Maze mazeStruct;
 
     protected static enum Tool {
         NONE,
@@ -38,6 +49,8 @@ public class AppWindow implements ActionListener {
 
     public AppWindow() {
         this.appFrame = new AppFrame(AppWindow.WINDOW_WIDTH, AppWindow.WINDOW_HEIGHT, this);
+        this.solutionPresenter = new SolutionPresenter();
+        this.pathFinder = new DFS();
     }
 
     public void displayMaze(Maze_InputFormat m) {
@@ -81,7 +94,7 @@ public class AppWindow implements ActionListener {
         ZoomUtility zoomUtility = new ZoomUtility(this);
         this.statusPanel.add(zoomUtility);
 
-        AlgorithmSelectionField algSelector = new AlgorithmSelectionField();
+        this.algSelector = new AlgorithmSelectionField(this.m, (MazeContainer) this.mazeContainer);
         this.statusPanel.add(algSelector);
 
         this.solveButton = new JButton("Solve maze");
@@ -107,6 +120,10 @@ public class AppWindow implements ActionListener {
         return this.toolSelector.getSelectedTool();
     }
 
+    public JPanel getMazeContainer(){
+        return this.mazeContainer;
+    }
+
     public void loadMaze(String inputFilePath, boolean isInputBinary) { 
         if(isInputBinary) {
             try {
@@ -127,12 +144,33 @@ public class AppWindow implements ActionListener {
             } catch (IllegalStateException ex) {
                 // Handle error
             }
+        try {
+            this.mazeStruct = Maze.fromInputFormat(m);
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            // Handle errors
+        }
+    }
+
+    public void setMaze(Maze maze) {
+        this.mazeStruct = maze;
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if(event.getSource() == this.solveButton)
-            // Solve here
-            throw new UnsupportedOperationException();
+        if(event.getSource() == this.solveButton) {
+            switch(this.algSelector.getSelectedAlgorithm()){
+                case DFS:
+                    this.pathFinder = new DFS();
+                    break;
+                case BFS:
+                    this.pathFinder = new BFS();
+                    break;
+                default:
+                    this.pathFinder = new BFS();
+                    break;
+            }
+            this.mazeStruct.resetMaze();
+            this.pathFinder.solveMaze(this.mazeStruct, m, this);
+        }
     }
 }

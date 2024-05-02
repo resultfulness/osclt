@@ -8,16 +8,23 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import lmp2.oscillate.Maze_InputFormat;
+
+
 public class AlgorithmSelectionField extends JPanel implements ActionListener {
-    protected static enum Algorithm {
+    public static enum Algorithm {
         DFS, BFS
     };
     private Algorithm selectedAlg = Algorithm.DFS;
+    private Maze_InputFormat maze_inputFormat;
+    private MazeContainer mazeContainer;
 
     private JComboBox<Algorithm> algorithmSelectorField;
 
-    public AlgorithmSelectionField() {
+    public AlgorithmSelectionField(Maze_InputFormat maze_inputFormat, MazeContainer mazeContainer) {
         super(new FlowLayout()); 
+        this.maze_inputFormat = maze_inputFormat;
+        this.mazeContainer = mazeContainer;
         this.initComponent();
     }
 
@@ -38,7 +45,10 @@ public class AlgorithmSelectionField extends JPanel implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent event) { 
-        if (event.getSource() == this.algorithmSelectorField)
+        if (event.getSource() == this.algorithmSelectorField){
             selectedAlg = (Algorithm) this.algorithmSelectorField.getSelectedItem();
+            this.maze_inputFormat.clearSolution();
+            this.mazeContainer.repaint();
+        }
     }
 }

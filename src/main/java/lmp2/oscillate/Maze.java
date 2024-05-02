@@ -213,6 +213,13 @@ public class Maze {
         this.solutionOffset = solutionOffset;
     }
 
+    public void resetMaze(){
+        this.cells.forEach((cell) -> {
+            cell.setVisited(false);
+            cell.setParentIndex(0);
+        });
+    }
+
     @Override
     public String toString() {
         final int truncateAfter = 3;
@@ -267,8 +274,6 @@ public class Maze {
         }
 
         public void setVisited(boolean visited) {
-            if(this.visited)
-                return;
             this.visited = visited;
         }
 

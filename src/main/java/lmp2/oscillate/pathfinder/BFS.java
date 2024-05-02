@@ -6,7 +6,7 @@ import java.util.Queue;
 import lmp2.oscillate.Maze;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.Maze.Cell;
-import lmp2.oscillate.ui.AppWindow2;
+import lmp2.oscillate.ui.AppWindow;
 
 public final class BFS extends PathFinder {
     private Queue<Integer> solveQueue;
@@ -18,7 +18,7 @@ public final class BFS extends PathFinder {
     }
 
     @Override
-    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow2 appWindow) throws IllegalStateException {
+    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow appWindow) throws IllegalStateException {
         this.maze = maze;
         this.maze_inputFormat = maze_inputFormat;
         this.solveQueue = new LinkedList<Integer>();
@@ -37,14 +37,14 @@ public final class BFS extends PathFinder {
                 break;
             if(processAdjacent(currentIndex, Maze.WEST_VALUE))
                 break;
-            appWindow.getAppContainer().repaint();
+            appWindow.getMazeContainer().repaint();
             try{
                 Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         } while(!this.solveQueue.isEmpty());
-        appWindow.getAppContainer().repaint();
+        appWindow.getMazeContainer().repaint();
         if(this.solveQueue.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
     }
