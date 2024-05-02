@@ -43,26 +43,10 @@ public class MazeFilePicker extends JPanel implements ActionListener {
     }
 
     private void updateLabels() {
-        String fullPath = App.config.getInputFilePath();
-        String path = fullPath;
-        // so the path length doesn't get out of control
-        int maxChars = 40;
-        if (fullPath.length() > maxChars) {
-            String dots = "...";
-            int toShow = maxChars - dots.length();
-
-            path = new StringBuilder()
-                .append(fullPath, 0, toShow / 2)
-                .append(dots)
-                .append(
-                    fullPath,
-                    fullPath.length() - toShow / 2,
-                    fullPath.length())
-                .toString();
-        }
-
         this.fileNameLabel.setText(
-            "Selected file: `" + path + "`"
+            "Selected file: `" +
+            new File(App.config.getInputFilePath()).getName()
+            + "`"
         );
         this.isInputBinaryCheckbox.setSelected(
             App.config.getIsInputFileBinary()
