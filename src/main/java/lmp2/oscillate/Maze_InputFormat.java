@@ -25,6 +25,46 @@ public class Maze_InputFormat {
         this.charMap = new byte[fileWidth * fileHeight];
     }
 
+    public void fromMaze(Maze maze) {
+        this.initialise(maze.getWidth() * 2 + 1, maze.getHeight() * 2 + 1);
+        // Edges
+        this.mapCharAt(WALL, 0);
+        this.mapCharAt(WALL, getFileWidth() - 1);
+        this.mapCharAt(WALL, getFileSize() - 1 - getFileWidth());
+        this.mapCharAt(WALL, getFileSize() - 1);
+
+        // Iterate maze for rest
+        for(int cellIndex = 0; cellIndex < maze.getSize(); cellIndex++){
+            int relativeIndex = getInputIndexFromMazeIndex(cellIndex);
+            mapCharAt(PATH, relativeIndex);
+            byte adjacents = maze.getAdjacentsAt(cellIndex);
+            if(cellIndex < maze.getSize() - 2){
+                if((adjacents & Maze.EAST_VALUE) != 0)
+                    mapCharAt(PATH, relativeIndex + 1);
+                else
+                    mapCharAt(WALL, relativeIndex + 1);
+            }
+            if(cellIndex % maze.getWidth() != 0) {
+                if((adjacents & Maze.WEST_VALUE) != 0)
+                    mapCharAt(PATH, relativeIndex - 1);
+                else
+                    mapCharAt(WALL, relativeIndex - 1);
+            }
+            if(cellIndex > maze.getWidth()) {
+                if((adjacents & Maze.NORTH_VALUE) != 0)
+                    mapCharAt(PATH, relativeIndex - this.getFileWidth());
+                else
+                    mapCharAt(WALL, relativeIndex - this.getFileWidth());
+            }
+            if(cellIndex < maze.getSize() - maze.getWidth() - 1){
+                if((adjacents & Maze.SOUTH_VALUE) != 0)
+                    mapCharAt(PATH, relativeIndex + this.getFileWidth());
+                else
+                    mapCharAt(WALL, relativeIndex + this.getFileWidth());
+            }
+        }
+    }
+
     public int getFileWidth() {
         return this.fileWidth;
     }

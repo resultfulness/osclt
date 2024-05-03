@@ -54,17 +54,17 @@ public final class BFS extends PathFinder {
     // Returns true if processed cell is end cell
     private boolean processAdjacent(int cellIndex, byte direction) {
         Cell adjacentCell;
-        byte adjacents = maze.getAdjacentsAt(cellIndex);
+        byte adjacents = this.maze.getAdjacentsAt(cellIndex);
         int offset = 0;
         switch(direction){
             case Maze.NORTH_VALUE:
-                offset = -maze.getWidth();
+                offset = -this.maze.getWidth();
                 break;
             case Maze.EAST_VALUE:
                 offset = 1;
                 break;
             case Maze.SOUTH_VALUE:
-                offset = maze.getWidth();
+                offset = this.maze.getWidth();
                 break;
             case Maze.WEST_VALUE:
                 offset = -1;
@@ -72,18 +72,18 @@ public final class BFS extends PathFinder {
         }
         if((adjacents & direction) == direction) {
             try{
-                adjacentCell = maze.get(cellIndex + offset);
+                adjacentCell = this.maze.get(cellIndex + offset);
             }
             catch(IndexOutOfBoundsException e){
                 return false;
             }
             if(!adjacentCell.isVisited()){
-                solveQueue.add(cellIndex + offset);
-                maze.setParentIndexAt(cellIndex + offset, cellIndex);
+                this.solveQueue.add(cellIndex + offset);
+                this.maze.setParentIndexAt(cellIndex + offset, cellIndex);
                 int offsetBetween = (this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex + offset) - this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex)) / 2;
                 this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex + offset));
                 this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex) + offsetBetween);
-                if(cellIndex + offset == maze.getEndIndex())
+                if(cellIndex + offset == this.maze.getEndIndex())
                     return true;
             }
         }

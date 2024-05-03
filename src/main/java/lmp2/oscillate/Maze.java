@@ -16,7 +16,7 @@ public class Maze {
     public static final byte SOUTH_VALUE = 0b0010;
     public static final byte WEST_VALUE = 0b0001;
 
-    Maze(
+    public Maze(
         int width,
         int height,
         int solutionOffset
@@ -25,6 +25,12 @@ public class Maze {
         this.setHeight(height);
         this.setSolutionOffset(solutionOffset);
         this.cells = new ArrayList<>(this.width * this.height);
+    }
+
+    public void initializeEmptyCells() {
+        for(int i = 0 ; i < this.width * this.height; i++) {
+            cells.add(new Cell((byte) 0));
+        }
     }
 
     public static Maze fromInputFormat(Maze_InputFormat maze_InputFormat)

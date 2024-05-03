@@ -1,6 +1,7 @@
 package lmp2.oscillate.ui;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -19,12 +20,14 @@ import javax.swing.JScrollPane;
 import lmp2.oscillate.Maze;
 import lmp2.oscillate.AppLogger;
 import lmp2.oscillate.Maze_InputFormat;
+import lmp2.oscillate.generator.MazeGenerator;
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
 import lmp2.oscillate.pathfinder.AStar;
 import lmp2.oscillate.pathfinder.BFS;
 import lmp2.oscillate.pathfinder.DFS;
 import lmp2.oscillate.pathfinder.PathFinder;
+import lmp2.oscillate.ui.generator.GenerateInputArea;
 
 public class AppWindow implements ActionListener {
     private static final int WINDOW_WIDTH = 800;
@@ -39,6 +42,8 @@ public class AppWindow implements ActionListener {
     private JPanel statusPanel;
     private ToolSelector toolSelector;
     private JButton solveButton;
+    private JButton generateButton;
+    private GenerateInputArea generateInputArea;
     AlgorithmSelectionField algSelector;
 
     private PathFinder pathFinder;
@@ -102,8 +107,8 @@ public class AppWindow implements ActionListener {
         this.statusPanel.add(filePanel);
         JPanel editPanel = PanelFactory.create("Edit");
         this.statusPanel.add(editPanel);
-        JPanel solvePanel = PanelFactory.create("Solve");
-        this.statusPanel.add(solvePanel);
+        JPanel generateSolvePanel = PanelFactory.create("Generate & Solve");
+        this.statusPanel.add(generateSolvePanel);
 
         this.appFrame.getContentPane().add(
             this.statusPanel, BorderLayout.NORTH
@@ -121,15 +126,27 @@ public class AppWindow implements ActionListener {
         c.gridy = 2;
         editPanel.add(zoomUtility, c);
 
-        this.algSelector = new AlgorithmSelectionField(this.m, this);
-        this.statusPanel.add(algSelector);
+        // Generate & Solve section
+        this.generateInputArea = new GenerateInputArea();
         c.gridy = 0;
-        solvePanel.add(algSelector, c);
+        generateSolvePanel.add(generateInputArea, c);
+
+        this.algSelector = new AlgorithmSelectionField(this.m, this);
+        c.gridy = 1;
+        generateSolvePanel.add(algSelector, c);
+
+        JPanel generateSolveButtonsPanel = new JPanel(new FlowLayout());
+
+        this.generateButton = new JButton("Generate maze");
+        this.generateButton.addActionListener(this);
+        generateSolveButtonsPanel.add(this.generateButton);
 
         this.solveButton = new JButton("Solve maze");
         this.solveButton.addActionListener(this);
-        c.gridy = 1;
-        solvePanel.add(solveButton, c);
+        generateSolveButtonsPanel.add(this.solveButton);
+
+        c.gridy = 2;
+        generateSolvePanel.add(generateSolveButtonsPanel, c);
     }
 
     public int getCellSize() {
@@ -218,6 +235,12 @@ public class AppWindow implements ActionListener {
             }
             this.mazeStruct.resetMaze();
             this.pathFinder.start();
+        }
+        if(event.getSource() == this.generateButton) {
+            MazeGenerator generator = new MazeGenerator(this.generateInputArea.getMazeWidth(), this.generateInputArea.getMazeHeight());
+            this.mazeStruct = generator.generateMaze(this.generateInputArea.getMazeWallRemovalPercentage());
+            System.out.println(this.mazeStruct);
+            this.m.fromMaze(this.mazeStruct);
         }
     }
 

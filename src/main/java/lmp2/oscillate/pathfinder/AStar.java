@@ -80,17 +80,17 @@ public class AStar extends PathFinder {
     // Returns true if processed cell is end cell
     private boolean processAdjacent(CellInfo cellInfo, byte direction) {
         Cell adjacentCell;
-        byte adjacents = maze.getAdjacentsAt(cellInfo.cellIndex);
+        byte adjacents = this.maze.getAdjacentsAt(cellInfo.cellIndex);
         int offset = 0;
         switch(direction){
             case Maze.NORTH_VALUE:
-                offset = -maze.getWidth();
+                offset = -this.maze.getWidth();
                 break;
             case Maze.EAST_VALUE:
                 offset = 1;
                 break;
             case Maze.SOUTH_VALUE:
-                offset = maze.getWidth();
+                offset = this.maze.getWidth();
                 break;
             case Maze.WEST_VALUE:
                 offset = -1;
@@ -98,20 +98,20 @@ public class AStar extends PathFinder {
         }
         if((adjacents & direction) == direction) {
             try{
-                adjacentCell = maze.get(cellInfo.cellIndex + offset);
+                adjacentCell = this.maze.get(cellInfo.cellIndex + offset);
             }
             catch(IndexOutOfBoundsException e){
                 return false;
             }
             if(!adjacentCell.isVisited()){
                 
-                solveArray.add(new CellInfo(cellInfo.cellIndex + offset, cellInfo.distanceFromSource + 1, 
+                this.solveArray.add(new CellInfo(cellInfo.cellIndex + offset, cellInfo.distanceFromSource + 1, 
                     this.useEuclidianCalc ? calculateEuclidian(cellInfo.cellIndex) : calculateManhattan(cellInfo.cellIndex)));
-                maze.setParentIndexAt(cellInfo.cellIndex + offset, cellInfo.cellIndex);
+                    this.maze.setParentIndexAt(cellInfo.cellIndex + offset, cellInfo.cellIndex);
                 int offsetBetween = (this.maze_inputFormat.getInputIndexFromMazeIndex(cellInfo.cellIndex + offset) - this.maze_inputFormat.getInputIndexFromMazeIndex(cellInfo.cellIndex)) / 2;
                 this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(cellInfo.cellIndex + offset));
                 this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(cellInfo.cellIndex) + offsetBetween);
-                if(cellInfo.cellIndex + offset == maze.getEndIndex())
+                if(cellInfo.cellIndex + offset == this.maze.getEndIndex())
                     return true;
             }
         }
