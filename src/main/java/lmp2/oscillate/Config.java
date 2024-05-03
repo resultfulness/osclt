@@ -7,7 +7,7 @@ public class Config {
     private static final int OTHER_ARGS_EXPECTED_COUNT = 1;
     private final ArrayList<String> otherArgs = new ArrayList<>();
     private boolean isInputFileBinary;
-    private final String inputFilePath;
+    private String inputFilePath;
 
     Config(String[] args) throws IllegalArgumentException {
         for (String arg : args) {
@@ -56,8 +56,16 @@ public class Config {
         return this.isInputFileBinary;
     }
 
+    public void setInputFileBinary(boolean isInputFileBinary) {
+        this.isInputFileBinary = isInputFileBinary;
+    }
+
     public String getInputFilePath() {
         return this.inputFilePath;
+    }
+
+    public void setInputFilePath(String inputFilePath) {
+        this.inputFilePath = inputFilePath;
     }
 
     @Override

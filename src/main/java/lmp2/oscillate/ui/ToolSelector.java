@@ -1,6 +1,5 @@
 package lmp2.oscillate.ui;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,14 +14,19 @@ public class ToolSelector extends JPanel implements ActionListener {
     private JLabel toolInfo;
     private JLabel toolLabel;
     private JComboBox<AppWindow.Tool> toolList;
+    private AppWindow window;
 
-    public ToolSelector() {
+    public ToolSelector(AppWindow window) {
         super();
+        this.window = window;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(createToolSelectArea());
         this.toolInfo = new JLabel();
         this.toolInfo.setHorizontalAlignment(JLabel.CENTER);
-        this.add(this.toolInfo);
+        // a bit hacky but at least it's no longer off
+        JPanel p = new JPanel();
+        p.add(this.toolInfo);
+        this.add(p);
         setTool(AppWindow.Tool.NONE);
     }
 
@@ -46,6 +50,7 @@ public class ToolSelector extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         setTool((AppWindow.Tool) this.toolList.getSelectedItem());
+        this.window.onToolChange();
     }
 
     private void setTool(AppWindow.Tool tool){

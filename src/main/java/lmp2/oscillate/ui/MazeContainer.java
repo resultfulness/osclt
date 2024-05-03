@@ -15,11 +15,9 @@ import lmp2.oscillate.Maze_InputFormat;
 
 public class MazeContainer extends JPanel {
     private AppWindow window;
-    private Maze_InputFormat maze_inputFormat;
 
-    public MazeContainer(AppWindow window, Maze_InputFormat maze_inputFormat) {
+    public MazeContainer(AppWindow window) {
         this.window = window;
-        this.maze_inputFormat = maze_inputFormat;
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -51,27 +49,27 @@ public class MazeContainer extends JPanel {
                     case NONE:
                         break;
                     case PATH:
-                        if(!maze_inputFormat.canBePath(cellXY))
+                        if(!window.m.canBePath(cellXY))
                             break;
-                        maze_inputFormat.mapCharAt(Maze_InputFormat.PATH, cellXY);
+                        window.m.mapCharAt(Maze_InputFormat.PATH, cellXY);
                         break;
                     case WALL:
-                        if(!maze_inputFormat.canBeWall(cellXY))
+                        if(!window.m.canBeWall(cellXY))
                             break;
-                        maze_inputFormat.mapCharAt(Maze_InputFormat.WALL, cellXY);
+                        window.m.mapCharAt(Maze_InputFormat.WALL, cellXY);
                         break;
                     case START:
-                        if(!maze_inputFormat.canBeTarget(cellXY))
+                        if(!window.m.canBeStartEndIndex(cellXY))
                             break;
-                        maze_inputFormat.mapCharAt(Maze_InputFormat.START, cellXY);
+                        window.m.mapCharAt(Maze_InputFormat.START, cellXY);
                         break;
                     case END:
-                        if(!maze_inputFormat.canBeTarget(cellXY))
+                        if(!window.m.canBeStartEndIndex(cellXY))
                             break;
-                        maze_inputFormat.mapCharAt(Maze_InputFormat.END, cellXY);
+                        window.m.mapCharAt(Maze_InputFormat.END, cellXY);
                         break;
                 }
-                maze_inputFormat.clearSolution();
+                window.m.clearSolution();
 
                 repaint();
             }
@@ -87,45 +85,56 @@ public class MazeContainer extends JPanel {
             for (int j = 0; j < fw; j++) {
                 int k = i * fw + j;
                 char mazeCharacter = window.m.getCharAt(k);
-                if(mazeCharacter == Maze_InputFormat.PATH)
-                    continue;
 
                 int w = window.getCellSize();
                 int x = j * w;
                 int y = i * w;
-                switch(mazeCharacter){
+                switch (mazeCharacter) {
                     case (Maze_InputFormat.END):
-                        g.setColor(Color.magenta);
+                        g.setColor(new Color(250,128,114));
                         break;
                     case (Maze_InputFormat.START):
-                        g.setColor(Color.cyan);
+                        g.setColor(new Color(114, 168, 250));
                         break;
                     case (Maze_InputFormat.WALL):
                         g.setColor(Color.black);
                         break;
                     case (Maze_InputFormat.PATH_TRACE):
-                        g.setColor(Color.green);
+                        g.setColor(Color.gray);
                         break;
                     case (Maze_InputFormat.PATH_SOLUTION):
-                        g.setColor(Color.red);
+                        g.setColor(new Color(114, 250, 128));
                         break;
+                    default:
+                        g.setColor(Color.white);
                 }
                 g.fillRect(x, y, w, w);
-            }
-        }
 
-        // highlight available editable cells
-        switch (window.getSelectedTool()) {
-            case NONE:
-                break;
-            case WALL:
-                break;
-            case PATH:
-                break;
-            case START:
-                break;
-            case END:
-                break;
+                g.setColor(Color.GREEN);
+                ((java.awt.Graphics2D) g).setStroke(new java.awt.BasicStroke(4));
+                switch (window.getSelectedTool()) {
+                    case NONE:
+                        break;
+                    case WALL:
+                        if (window.m.canBeWall(k) &&
+                            mazeCharacter == Maze_InputFormat.PATH) {
+                            g.drawOval(x+2, y+2 ,w-4, w-4);
+                        }
+                        break;
+                    case PATH:
+                        if (window.m.canBePath(k) &&
+                            mazeCharacter == Maze_InputFormat.WALL) {
+                            g.drawOval(x+2, y+2 ,w-4, w-4);
+                        }
+                        break;
+                    case START:
+                    case END:
+                        if (window.m.canBeStartEndIndex(k)) {
+                            g.drawOval(x+2, y+2 ,w-4, w-4);
+                        }
+                        break;
+                }
+            }
         }
     }
 

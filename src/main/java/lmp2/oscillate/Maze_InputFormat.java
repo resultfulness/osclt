@@ -153,27 +153,41 @@ public class Maze_InputFormat {
     }
 
     public boolean canBePath(int index) {
-        return index / getFileWidth() % 2 == 1 || index % getFileWidth() % 2 == 1;
+        return 
+            !isIndexExternalWall(index) && (
+                index / getFileWidth() % 2 == 1 ||
+                index % getFileWidth() % 2 == 1
+            );
     }
 
     public boolean canBeWall(int index) {
         return index / getFileWidth() % 2 == 0 || index % getFileWidth() % 2 == 0;
     }
 
-    public boolean canBeTarget(int index) {
+    public boolean canBeStartEndIndex(int index) {
         return canBePath(index);
+    }
+
+    public boolean isIndexExternalWall(int index) {
+        int fw = this.getFileWidth();
+        int fh = this.getFileHeight();
+        return
+            index / fw < 1 ||
+            index / fw >= fh - 1 ||
+            index % fw == 0 ||
+            index % fw == fw - 1;
     }
 
     @Override
     public String toString() {
         return String.format("""
             Maze_InputFormat {
-                fileWidth: %d,
-                fileHeight: %d,
-                startIndex: %d,
-                endIndex: %d,
-                charMap: boolean[%d],
-                solutionOffset: %d,
+            fileWidth: %d,
+            fileHeight: %d,
+            startIndex: %d,
+            endIndex: %d,
+            charMap: boolean[%d],
+            solutionOffset: %d,
             }\
             """,
             this.fileWidth,
