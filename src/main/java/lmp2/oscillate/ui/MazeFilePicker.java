@@ -55,6 +55,7 @@ public class MazeFilePicker extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
+        this.appWindow.stopSolve();
         if(event.getSource() == this.isInputBinaryCheckbox) {
             App.config.setInputFileBinary(
                 this.isInputBinaryCheckbox.isSelected()

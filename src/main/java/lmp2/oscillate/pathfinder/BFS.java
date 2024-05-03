@@ -9,22 +9,22 @@ import lmp2.oscillate.Maze.Cell;
 import lmp2.oscillate.ui.AppWindow;
 
 public final class BFS extends PathFinder {
+
     private Queue<Integer> solveQueue;
-    private Maze maze;
-    private Maze_InputFormat maze_inputFormat;
 
-    public BFS() {
-
+    public BFS(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow appWindow) {
+        super(maze, maze_inputFormat, appWindow);
     }
 
     @Override
-    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow appWindow) throws IllegalStateException {
-        this.maze = maze;
-        this.maze_inputFormat = maze_inputFormat;
+    public void run() throws IllegalStateException {
         this.solveQueue = new LinkedList<Integer>();
+        this.isRunning = true;
         this.solveQueue.add(this.maze.getStartIndex());
         Cell currentCell;
         do{
+            if(!isRunning)
+                break;
             Integer currentIndex = this.solveQueue.remove();
             currentCell = this.maze.get(currentIndex);
             currentCell.setVisited(true);
@@ -42,11 +42,13 @@ public final class BFS extends PathFinder {
                 Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
+                this.isRunning = false;
             }
         } while(!this.solveQueue.isEmpty());
         appWindow.getMazeContainer().repaint();
         if(this.solveQueue.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
+        this.showSolution();
     }
     
     // Returns true if processed cell is end cell

@@ -21,6 +21,7 @@ public class MazeContainer extends JPanel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                window.stopSolve();
                 int fw = window.m.getFileWidth();
                 int fh = window.m.getFileHeight();
 

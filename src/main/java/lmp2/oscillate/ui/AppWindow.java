@@ -21,10 +21,10 @@ import lmp2.oscillate.AppLogger;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.parser.BinaryMazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
+import lmp2.oscillate.pathfinder.AStar;
 import lmp2.oscillate.pathfinder.BFS;
 import lmp2.oscillate.pathfinder.DFS;
 import lmp2.oscillate.pathfinder.PathFinder;
-import lmp2.oscillate.pathfinder.SolutionPresenter;
 
 public class AppWindow implements ActionListener {
     private static final int WINDOW_WIDTH = 800;
@@ -41,7 +41,6 @@ public class AppWindow implements ActionListener {
     private JButton solveButton;
     AlgorithmSelectionField algSelector;
 
-    private SolutionPresenter solutionPresenter;
     private PathFinder pathFinder;
     private Maze mazeStruct;
 
@@ -57,8 +56,6 @@ public class AppWindow implements ActionListener {
 
     public AppWindow() {
         this.appFrame = new AppFrame(AppWindow.WINDOW_WIDTH, AppWindow.WINDOW_HEIGHT, this);
-        this.solutionPresenter = new SolutionPresenter();
-        this.pathFinder = new DFS();
     }
 
     public void displayMaze(Maze_InputFormat m) {
@@ -77,6 +74,7 @@ public class AppWindow implements ActionListener {
             this.appSPContainer, BorderLayout.CENTER
         );
         
+        this.pathFinder = new DFS(this.mazeStruct, this.m, this);
         createStatusPanel();
     }
 
@@ -123,7 +121,7 @@ public class AppWindow implements ActionListener {
         c.gridy = 2;
         editPanel.add(zoomUtility, c);
 
-        this.algSelector = new AlgorithmSelectionField(this.m, (MazeContainer) this.mazeContainer);
+        this.algSelector = new AlgorithmSelectionField(this.m, this);
         this.statusPanel.add(algSelector);
         c.gridy = 0;
         solvePanel.add(algSelector, c);
@@ -132,7 +130,6 @@ public class AppWindow implements ActionListener {
         this.solveButton.addActionListener(this);
         c.gridy = 1;
         solvePanel.add(solveButton, c);
-
     }
 
     public int getCellSize() {
@@ -159,7 +156,15 @@ public class AppWindow implements ActionListener {
         return this.mazeContainer;
     }
 
+    public void stopSolve() {
+        this.pathFinder.interrupt();
+        this.mazeStruct.resetMaze();
+        this.m.clearSolution();
+        this.mazeContainer.repaint();
+    }
+
     public void loadMaze(String inputFilePath, boolean isInputBinary) { 
+        stopSolve();
         Logger logger = AppLogger.getLogger();
 
         if(isInputBinary) {
@@ -192,20 +197,27 @@ public class AppWindow implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
+        stopSolve();
         if(event.getSource() == this.solveButton) {
             switch(this.algSelector.getSelectedAlgorithm()){
                 case DFS:
-                    this.pathFinder = new DFS();
+                    this.pathFinder = new DFS(this.mazeStruct, this.m, this);
                     break;
                 case BFS:
-                    this.pathFinder = new BFS();
+                    this.pathFinder = new BFS(this.mazeStruct, this.m, this);
+                    break;
+                case AStarEuclidian:
+                    this.pathFinder = new AStar(this.mazeStruct, this.m, this, true);
+                    break;
+                case AStarManhattan:
+                    this.pathFinder = new AStar(this.mazeStruct, this.m, this, false);
                     break;
                 default:
-                    this.pathFinder = new BFS();
+                    this.pathFinder = new BFS(this.mazeStruct, this.m, this);
                     break;
             }
             this.mazeStruct.resetMaze();
-            this.pathFinder.solveMaze(this.mazeStruct, m, this);
+            this.pathFinder.start();
         }
     }
 

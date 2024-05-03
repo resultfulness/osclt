@@ -8,20 +8,21 @@ import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.ui.AppWindow;
 
 public final class DFS extends PathFinder {
-    private Stack<Integer> solveStack;
-    private Maze maze;
-    private Maze_InputFormat maze_inputFormat;
 
+    private Stack<Integer> solveStack;
+
+    public DFS(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow appWindow) {
+        super(maze, maze_inputFormat, appWindow);
+    }
     
     @Override
-    public void solveMaze(Maze maze, Maze_InputFormat maze_inputFormat, AppWindow appWindow)
-            throws IllegalStateException {
-        this.maze = maze;
-        this.maze_inputFormat = maze_inputFormat;
+    public void run() throws IllegalStateException {
         this.solveStack = new Stack<Integer>();
         this.solveStack.push(maze.getStartIndex());
-        
+        this.isRunning = true;
         do{
+            if(!isRunning)
+                break;
             Integer currentIndex = this.solveStack.pop();
             Cell currentCell = this.maze.get(currentIndex);
             currentCell.setVisited(true);
@@ -36,14 +37,16 @@ public final class DFS extends PathFinder {
                 break;
             appWindow.getMazeContainer().repaint();
             try{
-                Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
+                this.isRunning = false;
             }
         } while(!this.solveStack.isEmpty());
         appWindow.getMazeContainer().repaint();
         if(this.solveStack.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
+        this.showSolution();
     }
     
     private boolean processAdjacent(int cellIndex, byte direction) {

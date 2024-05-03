@@ -13,18 +13,18 @@ import lmp2.oscillate.Maze_InputFormat;
 
 public class AlgorithmSelectionField extends JPanel implements ActionListener {
     public static enum Algorithm {
-        DFS, BFS
+        DFS, BFS, AStarEuclidian, AStarManhattan
     };
     private Algorithm selectedAlg = Algorithm.DFS;
     private Maze_InputFormat maze_inputFormat;
-    private MazeContainer mazeContainer;
+    private AppWindow appWindow;
 
     private JComboBox<Algorithm> algorithmSelectorField;
 
-    public AlgorithmSelectionField(Maze_InputFormat maze_inputFormat, MazeContainer mazeContainer) {
+    public AlgorithmSelectionField(Maze_InputFormat maze_inputFormat, AppWindow appWindow) {
         super(new FlowLayout()); 
         this.maze_inputFormat = maze_inputFormat;
-        this.mazeContainer = mazeContainer;
+        this.appWindow = appWindow;
         this.initComponent();
     }
 
@@ -48,7 +48,7 @@ public class AlgorithmSelectionField extends JPanel implements ActionListener {
         if (event.getSource() == this.algorithmSelectorField){
             selectedAlg = (Algorithm) this.algorithmSelectorField.getSelectedItem();
             this.maze_inputFormat.clearSolution();
-            this.mazeContainer.repaint();
+            this.appWindow.stopSolve();
         }
     }
 }
