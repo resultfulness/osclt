@@ -53,7 +53,7 @@ public class AppWindow implements ActionListener {
         this.m = m;
         this.appFrame.setVisible(true);
 
-        this.mazeContainer = new MazeContainer(this, m);
+        this.mazeContainer = new MazeContainer(this);
         this.appSPContainer = new JScrollPane(this.mazeContainer);
         this.appSPContainer.setHorizontalScrollBarPolicy(
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
@@ -103,7 +103,7 @@ public class AppWindow implements ActionListener {
         c.gridy = 0;
         filePanel.add(mazeFilePicker, c);
 
-        this.toolSelector = new ToolSelector();
+        this.toolSelector = new ToolSelector(this);
         c.gridy = 1;
         editPanel.add(toolSelector, c);
 
@@ -169,5 +169,9 @@ public class AppWindow implements ActionListener {
         if(event.getSource() == this.solveButton)
             // Solve here
             throw new UnsupportedOperationException();
+    }
+
+    public void onToolChange() {
+        this.mazeContainer.repaint();
     }
 }

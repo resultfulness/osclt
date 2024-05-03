@@ -14,9 +14,11 @@ public class ToolSelector extends JPanel implements ActionListener {
     private JLabel toolInfo;
     private JLabel toolLabel;
     private JComboBox<AppWindow.Tool> toolList;
+    private AppWindow window;
 
-    public ToolSelector() {
+    public ToolSelector(AppWindow window) {
         super();
+        this.window = window;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(createToolSelectArea());
         this.toolInfo = new JLabel();
@@ -48,6 +50,7 @@ public class ToolSelector extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         setTool((AppWindow.Tool) this.toolList.getSelectedItem());
+        this.window.onToolChange();
     }
 
     private void setTool(AppWindow.Tool tool){
