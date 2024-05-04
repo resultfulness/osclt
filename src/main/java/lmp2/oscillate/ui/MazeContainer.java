@@ -63,11 +63,13 @@ public class MazeContainer extends JPanel {
                         if(!window.m.canBeStartEndIndex(cellXY))
                             break;
                         window.m.mapCharAt(Maze_InputFormat.START, cellXY);
+                        window.getMaze().setStartIndex(window.getMaze().getMazeIndexFromFileInputIndex(cellXY));
                         break;
                     case END:
                         if(!window.m.canBeStartEndIndex(cellXY))
                             break;
                         window.m.mapCharAt(Maze_InputFormat.END, cellXY);
+                        window.getMaze().setEndIndex(window.getMaze().getMazeIndexFromFileInputIndex(cellXY));
                         break;
                 }
                 window.m.clearSolution();

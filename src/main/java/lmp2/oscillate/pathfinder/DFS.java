@@ -37,7 +37,10 @@ public final class DFS extends PathFinder {
                 break;
             appWindow.getMazeContainer().repaint();
             try{
-                sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                if(1000/Math.max(maze.getWidth(), maze.getHeight()) > 0)
+                    sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                else
+                    sleep(1);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
                 this.isRunning = false;

@@ -226,6 +226,10 @@ public class Maze {
         });
     }
 
+    public int getMazeIndexFromFileInputIndex(int fileIndex) {
+        return (fileIndex / (getWidth() * 2 + 1) / 2) * getWidth() + (fileIndex % (getWidth() * 2 + 1) / 2);
+    }
+
     @Override
     public String toString() {
         final int truncateAfter = 3;

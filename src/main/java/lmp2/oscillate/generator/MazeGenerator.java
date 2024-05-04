@@ -75,23 +75,41 @@ public class MazeGenerator {
         this.maze = new Maze(this.width, this.height, 0);
         this.maze.initializeEmptyCells();
         this.recursiveDFS(0);
+        this.maze.setStartIndex(0);
+        this.maze.setEndIndex(this.maze.getSize()-1);
         removeWalls(wallRemovalPercentage);
         return this.maze;
     }
 
     private void removeWalls(int wallRemovalPercentage){
+        System.out.println("Walls percentage: " + wallRemovalPercentage);
         if(wallRemovalPercentage == 0)
             return; 
         int wallsRemoved = 0;
-        byte[] directions = {Maze.EAST_VALUE, Maze.NORTH_VALUE, Maze.SOUTH_VALUE, Maze.WEST_VALUE};
         Random rnd = new Random();
-        while(wallsRemoved < this.maze.getSize() * (100 / wallRemovalPercentage)) {
+        System.out.println("Walls removed: " + wallsRemoved + ", expected: " + this.maze.getSize() * ((double)wallRemovalPercentage / 100));
+        while(wallsRemoved < this.maze.getSize() * ((double)wallRemovalPercentage / 100)) {
+            System.out.println("Walls removed: " + wallsRemoved + ", expected: " + this.maze.getSize() * ((double)wallRemovalPercentage / 100));
+            ArrayList<Byte> directions = new ArrayList<>()
+            {
+                {
+                    add(Maze.EAST_VALUE);
+                    add(Maze.NORTH_VALUE);
+                    add(Maze.SOUTH_VALUE);
+                    add(Maze.WEST_VALUE);
+                }
+            };
             int randomCellIndex = rnd.nextInt(this.maze.getSize() - 1);
-            int randomDirectionIndex = rnd.nextInt(4);
-            byte randomDirection = directions[randomDirectionIndex];
-            byte adjacents = this.maze.getAdjacentsAt(randomCellIndex);
-            if((adjacents & randomDirection) == 0){
-                wallsRemoved += removeWall(randomCellIndex, randomDirection);;
+            while(directions.size() > 0) {
+                int randomDirectionIndex = Math.abs(rnd.nextInt()) % directions.size();
+                byte randomDirection = directions.get(randomDirectionIndex);
+                byte adjacents = this.maze.getAdjacentsAt(randomCellIndex);
+                if((adjacents & randomDirection) == 0){
+                    System.out.println("Removing " + randomCellIndex + " at " + directions.get(randomDirectionIndex));
+                    wallsRemoved += removeWall(randomCellIndex, randomDirection);
+                    break;
+                }
+                directions.remove(randomDirectionIndex);
             }
         }
     }
@@ -105,24 +123,28 @@ public class MazeGenerator {
                     return 0;
                 currentAdjacents = this.maze.getAdjacentsAt(cellIndex + 1);
                 currentAdjacents += Maze.WEST_VALUE;
+                this.maze.setAdjacentsAt(cellIndex + 1, currentAdjacents);
                 break;
             case Maze.NORTH_VALUE:
                 if(cellIndex / this.maze.getWidth() == 0)
                     return 0;
                 currentAdjacents = this.maze.getAdjacentsAt(cellIndex - this.maze.getWidth());
                 currentAdjacents += Maze.SOUTH_VALUE;
+                this.maze.setAdjacentsAt(cellIndex - this.maze.getWidth(), currentAdjacents);
                 break;
             case Maze.WEST_VALUE:
                 if(cellIndex % this.maze.getWidth() == 0)
                     return 0;
                 currentAdjacents = this.maze.getAdjacentsAt(cellIndex - 1);
                 currentAdjacents += Maze.EAST_VALUE;
+                this.maze.setAdjacentsAt(cellIndex - 1, currentAdjacents);
                 break;
             case Maze.SOUTH_VALUE:
                 if(cellIndex / this.maze.getWidth() == this.maze.getHeight() - 1)
                     return 0;
                 currentAdjacents = this.maze.getAdjacentsAt(cellIndex + this.maze.getWidth());
                 currentAdjacents += Maze.NORTH_VALUE;
+                this.maze.setAdjacentsAt(cellIndex + this.maze.getWidth(), currentAdjacents);
                 break;
         }
         currentAdjacents = this.maze.getAdjacentsAt(cellIndex);

@@ -63,6 +63,8 @@ public class Maze_InputFormat {
                     mapCharAt(WALL, relativeIndex + this.getFileWidth());
             }
         }
+        this.setFileEndIndex(this.getFileSize() - this.getFileWidth() - 1);
+        this.setFileStartIndex(this.getFileWidth());
     }
 
     public int getFileWidth() {

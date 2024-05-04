@@ -34,9 +34,15 @@ public class SolutionPresenter extends Thread {
             int offsetBetween = (maze_inputFormat.getInputIndexFromMazeIndex(currentIndex) - maze_inputFormat.getInputIndexFromMazeIndex(previousIndex)) / 2;
             maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_SOLUTION, maze_inputFormat.getInputIndexFromMazeIndex(previousIndex));
             try {
-                Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                if(1000/Math.max(maze.getWidth(), maze.getHeight()) > 0)
+                    sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                else
+                    sleep(1);
                 appWindow.getMazeContainer().repaint();
-                Thread.sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                if(1000/Math.max(maze.getWidth(), maze.getHeight()) > 0)
+                    sleep(1000/Math.max(maze.getWidth(), maze.getHeight()));
+                else
+                    sleep(1);
                 maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_SOLUTION, maze_inputFormat.getInputIndexFromMazeIndex(previousIndex) + offsetBetween);
                 appWindow.getMazeContainer().repaint();
             } catch (InterruptedException ex) {

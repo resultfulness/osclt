@@ -212,10 +212,15 @@ public class AppWindow implements ActionListener {
         this.mazeStruct = maze;
     }
 
+    public Maze getMaze() {
+        return this.mazeStruct;
+    }
+
     @Override
     public void actionPerformed(ActionEvent event) {
         stopSolve();
         if(event.getSource() == this.solveButton) {
+            this.mazeStruct = Maze.fromInputFormat(this.m);
             switch(this.algSelector.getSelectedAlgorithm()){
                 case DFS:
                     this.pathFinder = new DFS(this.mazeStruct, this.m, this);
