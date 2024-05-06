@@ -43,14 +43,15 @@ public final class DFS extends PathFinder {
                 else
                     sleep(1);
             } catch (InterruptedException ex) {
-                LogDialog.showMessage("Program interrupt");
+                LogDialog.show("Solution interrupted.", LogDialog.Level.WARN);
                 this.isRunning = false;
             }
         } while(!this.solveStack.isEmpty());
         appWindow.getMazeContainer().repaint();
         if(this.solveStack.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
-        this.showSolution();
+        if (this.isRunning)
+            this.showSolution();
     }
     
     private boolean processAdjacent(int cellIndex, byte direction) {

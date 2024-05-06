@@ -178,6 +178,7 @@ public class AppWindow implements ActionListener {
         this.mazeStruct.resetMaze();
         this.m.clearSolution();
         this.mazeContainer.repaint();
+        this.mazeContainer.revalidate();
     }
 
     public void loadMaze(String inputFilePath, boolean isInputBinary) { 
@@ -191,11 +192,14 @@ public class AppWindow implements ActionListener {
         try {
             parser.parseInto(this.m, inputFilePath);
             this.mazeStruct = Maze.fromInputFormat(this.m);
+
+            LogDialog.show(
+                "`" + inputFilePath + "` loaded!", LogDialog.Level.INFO);
         } catch (
             IllegalStateException | IOException | IndexOutOfBoundsException e
         ) {
             logger.log(Level.SEVERE, e.getMessage());
-            LogDialog.showErrorMessage(e.getMessage());
+            LogDialog.show(e.getMessage(), LogDialog.Level.CRITICAL);
             System.exit(1);
         }
     }
@@ -234,10 +238,15 @@ public class AppWindow implements ActionListener {
             this.pathFinder.start();
         }
         if(event.getSource() == this.generateButton) {
-            MazeGenerator generator = new MazeGenerator(this.generateInputArea.getMazeWidth(), this.generateInputArea.getMazeHeight());
-            this.mazeStruct = generator.generateMaze(this.generateInputArea.getMazeWallRemovalPercentage());
-            System.out.println(this.mazeStruct);
-            this.m.fromMaze(this.mazeStruct);
+            try {
+                MazeGenerator generator = new MazeGenerator(this.generateInputArea.getMazeWidth(), this.generateInputArea.getMazeHeight());
+                this.mazeStruct = generator.generateMaze(this.generateInputArea.getMazeWallRemovalPercentage());
+                System.out.println(this.mazeStruct);
+                this.m.fromMaze(this.mazeStruct);
+                LogDialog.show("Maze generated successfully!", LogDialog.Level.INFO);
+            } catch (IllegalArgumentException e) {
+                LogDialog.show(e.getMessage(), LogDialog.Level.ERROR);
+            }
         }
     }
 

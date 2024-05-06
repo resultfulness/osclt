@@ -34,13 +34,15 @@ public class ZoomUtility extends JPanel implements ActionListener {
             try {
                 appWindow.setCellSize(appWindow.getCellSize() + 1);
             } catch (IllegalArgumentException ex) {
-
+                LogDialog.show(
+                    "Maximum cellsize reached", LogDialog.Level.WARN);
             }
         else
             try {
                 appWindow.setCellSize(appWindow.getCellSize() - 1);
             } catch (IllegalArgumentException ex) {
-
+                LogDialog.show(
+                    "Minimum cellsize reached", LogDialog.Level.WARN);
             }
     }
 }

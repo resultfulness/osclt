@@ -3,6 +3,7 @@ package lmp2.oscillate.pathfinder;
 import lmp2.oscillate.Maze;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.ui.AppWindow;
+import lmp2.oscillate.ui.LogDialog;
 
 public class SolutionPresenter extends Thread {
     private Maze maze;
@@ -46,7 +47,7 @@ public class SolutionPresenter extends Thread {
                 maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_SOLUTION, maze_inputFormat.getInputIndexFromMazeIndex(previousIndex) + offsetBetween);
                 appWindow.getMazeContainer().repaint();
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                LogDialog.show("Solution interrupted.", LogDialog.Level.WARN);
                 this.isRunning = false;
             }
         }

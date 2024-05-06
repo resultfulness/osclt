@@ -71,14 +71,15 @@ public class AStar extends PathFinder {
                 else
                     sleep(1);
             } catch (InterruptedException ex) {
-                LogDialog.showMessage("Program interrupt");
+                LogDialog.show("Solution interrupted.", LogDialog.Level.WARN);
                 this.isRunning = false;
             }
         } while(!this.solveArray.isEmpty());
         appWindow.getMazeContainer().repaint();
         if(this.solveArray.isEmpty())
-            throw new IllegalStateException("Couldn't find path between given start and end cells\n");
-        this.showSolution();
+            throw new IllegalStateException("Couldn't find path between given start and end cells.");
+        if (this.isRunning)
+            this.showSolution();
     }
     
     // Returns true if processed cell is end cell

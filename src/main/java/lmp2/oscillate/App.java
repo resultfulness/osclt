@@ -80,7 +80,7 @@ public class App {
             maze = Maze.fromInputFormat(maze_InputFormat);
         } catch (IllegalStateException | IndexOutOfBoundsException e) {
             logger.log(Level.SEVERE, e.getMessage());
-            LogDialog.showErrorMessage(e.getMessage());
+            LogDialog.show(e.getMessage(), LogDialog.Level.CRITICAL);
             System.exit(1);
         }
         logger.log(

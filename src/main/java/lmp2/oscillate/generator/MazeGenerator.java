@@ -2,7 +2,6 @@ package lmp2.oscillate.generator;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 
 import lmp2.oscillate.Maze;
 

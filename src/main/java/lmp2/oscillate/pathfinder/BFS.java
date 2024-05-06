@@ -45,14 +45,15 @@ public final class BFS extends PathFinder {
                 else
                     sleep(1);
             } catch (InterruptedException ex) {
-                LogDialog.showMessage("Program interrupt");
+                LogDialog.show("Solution interrupted.", LogDialog.Level.WARN);
                 this.isRunning = false;
             }
         } while(!this.solveQueue.isEmpty());
         appWindow.getMazeContainer().repaint();
         if(this.solveQueue.isEmpty())
             throw new IllegalStateException("Couldn't find path between given start and end cells\n");
-        this.showSolution();
+        if (this.isRunning)
+            this.showSolution();
     }
     
     // Returns true if processed cell is end cell

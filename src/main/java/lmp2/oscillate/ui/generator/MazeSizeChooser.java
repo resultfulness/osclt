@@ -44,7 +44,7 @@ public class MazeSizeChooser extends JPanel implements DocumentListener {
     public void changedUpdate(DocumentEvent arg0) {
         try{
             this.mazeSizeValue = Integer.parseInt(this.valueInputField.getText());
-        } catch(Exception ex) {
+        } catch(Exception e) {
         }
     }
 
