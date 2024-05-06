@@ -10,6 +10,7 @@ import lmp2.oscillate.parser.MazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
 
 import lmp2.oscillate.ui.AppWindow;
+import lmp2.oscillate.ui.LogDialog;
 
 public class App {
     public static Config config;
@@ -79,6 +80,7 @@ public class App {
             maze = Maze.fromInputFormat(maze_InputFormat);
         } catch (IllegalStateException | IndexOutOfBoundsException e) {
             logger.log(Level.SEVERE, e.getMessage());
+            LogDialog.showErrorMessage(e.getMessage());
             System.exit(1);
         }
         logger.log(

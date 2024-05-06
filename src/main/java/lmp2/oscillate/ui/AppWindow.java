@@ -17,11 +17,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import lmp2.oscillate.Maze;
 import lmp2.oscillate.AppLogger;
+import lmp2.oscillate.Maze;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.generator.MazeGenerator;
 import lmp2.oscillate.parser.BinaryMazeParser;
+import lmp2.oscillate.parser.MazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
 import lmp2.oscillate.pathfinder.AStar;
 import lmp2.oscillate.pathfinder.BFS;
@@ -118,13 +119,12 @@ public class AppWindow implements ActionListener {
         c.gridy = 0;
         filePanel.add(mazeFilePicker, c);
 
+        editPanel.setLayout(new BorderLayout());
         this.toolSelector = new ToolSelector(this);
-        c.gridy = 1;
-        editPanel.add(toolSelector, c);
+        editPanel.add(toolSelector, BorderLayout.NORTH);
 
         ZoomUtility zoomUtility = new ZoomUtility(this);
-        c.gridy = 2;
-        editPanel.add(zoomUtility, c);
+        editPanel.add(zoomUtility, BorderLayout.SOUTH);
 
         // Generate & Solve section
         this.generateInputArea = new GenerateInputArea();
@@ -184,27 +184,19 @@ public class AppWindow implements ActionListener {
         stopSolve();
         Logger logger = AppLogger.getLogger();
 
-        if(isInputBinary) {
-            try {
-                new BinaryMazeParser().parseInto(m, inputFilePath);
-                mazeContainer.repaint();
-            } catch (IOException | IllegalStateException ex) {
-                logger.log(Level.SEVERE, ex.getMessage());
-                System.exit(1);
-            }
-        }
-        else
-            try {
-                new RegularMazeParser().parseInto(m, inputFilePath);
-                mazeContainer.repaint();
-            } catch (IOException | IllegalStateException ex) {
-                logger.log(Level.SEVERE, ex.getMessage());
-                System.exit(1);
-            }
+        MazeParser parser = isInputBinary
+            ? new BinaryMazeParser()
+            : new RegularMazeParser();
+
         try {
-            this.mazeStruct = Maze.fromInputFormat(m);
-        } catch (IllegalStateException | IndexOutOfBoundsException e) {
-            // Handle errors
+            parser.parseInto(this.m, inputFilePath);
+            this.mazeStruct = Maze.fromInputFormat(this.m);
+        } catch (
+            IllegalStateException | IOException | IndexOutOfBoundsException e
+        ) {
+            logger.log(Level.SEVERE, e.getMessage());
+            LogDialog.showErrorMessage(e.getMessage());
+            System.exit(1);
         }
     }
 

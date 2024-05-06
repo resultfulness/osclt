@@ -1,8 +1,8 @@
 package lmp2.oscillate.ui.generator;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -16,7 +16,8 @@ public class MazeSizeChooser extends JPanel implements DocumentListener {
     private JTextField valueInputField;
 
     public MazeSizeChooser(String labelHint) {
-        super(new FlowLayout());
+        super();
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.labelHint = labelHint;
         this.initComponent();
     }

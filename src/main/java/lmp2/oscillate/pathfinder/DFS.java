@@ -6,6 +6,7 @@ import lmp2.oscillate.Maze;
 import lmp2.oscillate.Maze.Cell;
 import lmp2.oscillate.Maze_InputFormat;
 import lmp2.oscillate.ui.AppWindow;
+import lmp2.oscillate.ui.LogDialog;
 
 public final class DFS extends PathFinder {
 
@@ -42,7 +43,7 @@ public final class DFS extends PathFinder {
                 else
                     sleep(1);
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                LogDialog.showMessage("Program interrupt");
                 this.isRunning = false;
             }
         } while(!this.solveStack.isEmpty());

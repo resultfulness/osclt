@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,7 +23,8 @@ public class AlgorithmSelectionField extends JPanel implements ActionListener {
     private JComboBox<Algorithm> algorithmSelectorField;
 
     public AlgorithmSelectionField(Maze_InputFormat maze_inputFormat, AppWindow appWindow) {
-        super(new FlowLayout()); 
+        super(); 
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.maze_inputFormat = maze_inputFormat;
         this.appWindow = appWindow;
         this.initComponent();
@@ -31,7 +33,8 @@ public class AlgorithmSelectionField extends JPanel implements ActionListener {
     private void initComponent() {
         JLabel algorithmSelectorLabel = new JLabel();
         algorithmSelectorLabel.setText("Select algorithm used for solve");
-        
+        algorithmSelectorLabel.setHorizontalAlignment(JLabel.LEFT);
+
         this.algorithmSelectorField = new JComboBox<Algorithm>(Algorithm.values());
         this.algorithmSelectorField.addActionListener(this);
 
