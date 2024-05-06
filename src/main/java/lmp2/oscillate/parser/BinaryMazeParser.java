@@ -18,8 +18,14 @@ public class BinaryMazeParser extends MazeParser {
         DataInputStream stream = new DataInputStream(
             new FileInputStream(inputFilePath)
         );
-
-        BinaryFormat.Header header = serializeHeader(stream);
+        BinaryFormat.Header header;
+        try {
+            header = serializeHeader(stream);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException(
+                "error while parsing binary input format maze: " + e.getMessage()
+            );
+        }
 
         try {
             maze_InputFormat.initialise(header.COLS, header.ROWS);
@@ -65,10 +71,12 @@ public class BinaryMazeParser extends MazeParser {
     }
 
     private BinaryFormat.Header serializeHeader(DataInputStream stream)
-    throws IOException {
+    throws IOException, IllegalStateException {
         BinaryFormat.Header header = new BinaryFormat.Header();
         header.FID = readIntLittleEndian(stream);
         header.ESC = readByte(stream);
+        if(header.ESC != 27)
+            throw new IllegalStateException();
         header.COLS = readShortLittleEndian(stream);
         header.ROWS = readShortLittleEndian(stream);
         header.SX = readShortLittleEndian(stream);

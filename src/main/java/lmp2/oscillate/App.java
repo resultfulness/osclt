@@ -3,12 +3,17 @@ package lmp2.oscillate;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lmp2.oscillate.parser.MazeParser;
+
+
 import lmp2.oscillate.parser.BinaryMazeParser;
+import lmp2.oscillate.parser.MazeParser;
 import lmp2.oscillate.parser.RegularMazeParser;
 
+import lmp2.oscillate.ui.AppWindow;
+import lmp2.oscillate.ui.LogDialog;
+
 public class App {
-    private static Config config;
+    public static Config config;
 
     public static void main(String[] args) {
         Logger logger = AppLogger.getLogger();
@@ -67,19 +72,21 @@ public class App {
         }
 
         // show here
+        AppWindow appWindow = new AppWindow();
+        appWindow.displayMaze(maze_InputFormat);
 
         Maze maze = null;
         try {
             maze = Maze.fromInputFormat(maze_InputFormat);
         } catch (IllegalStateException | IndexOutOfBoundsException e) {
             logger.log(Level.SEVERE, e.getMessage());
+            LogDialog.show(e.getMessage(), LogDialog.Level.CRITICAL);
             System.exit(1);
         }
         logger.log(
             Level.INFO,
             "transformed input format maze into maze:\n" + maze
         );
-
-        // solve and show solution here
+        appWindow.setMaze(maze);
     }
 }

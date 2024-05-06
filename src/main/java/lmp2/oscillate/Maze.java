@@ -16,7 +16,7 @@ public class Maze {
     public static final byte SOUTH_VALUE = 0b0010;
     public static final byte WEST_VALUE = 0b0001;
 
-    Maze(
+    public Maze(
         int width,
         int height,
         int solutionOffset
@@ -25,6 +25,12 @@ public class Maze {
         this.setHeight(height);
         this.setSolutionOffset(solutionOffset);
         this.cells = new ArrayList<>(this.width * this.height);
+    }
+
+    public void initializeEmptyCells() {
+        for(int i = 0 ; i < this.width * this.height; i++) {
+            cells.add(new Cell((byte) 0));
+        }
     }
 
     public static Maze fromInputFormat(Maze_InputFormat maze_InputFormat)
@@ -42,14 +48,14 @@ public class Maze {
             for (int j = 1; j < fw; j += 2) {
                 int cellIndex = i * fw + j;
                 char cell = maze_InputFormat.getCharAt(cellIndex);
-                if (cell != Maze_InputFormat.PATH) {
+                if (cell != Maze_InputFormat.PATH && cell != Maze_InputFormat.END && cell != Maze_InputFormat.START) {
                     throw new IllegalStateException(
                         "maze in input format corrupted"
                     );
                 }
-                char adjN = maze_InputFormat.getCharAt(cellIndex - fh);
+                char adjN = maze_InputFormat.getCharAt(cellIndex - fw);
                 char adjE = maze_InputFormat.getCharAt(cellIndex + 1);
-                char adjS = maze_InputFormat.getCharAt(cellIndex + fh);
+                char adjS = maze_InputFormat.getCharAt(cellIndex + fw);
                 char adjW = maze_InputFormat.getCharAt(cellIndex - 1);
 
                 byte cellAdjacencies = 0;
@@ -123,7 +129,7 @@ public class Maze {
         }
     }
 
-    private Cell get(int index) throws IndexOutOfBoundsException {
+    public Cell get(int index) throws IndexOutOfBoundsException {
         return this.cells.get(index);
     }
 
@@ -213,6 +219,17 @@ public class Maze {
         this.solutionOffset = solutionOffset;
     }
 
+    public void resetMaze(){
+        this.cells.forEach((cell) -> {
+            cell.setVisited(false);
+            cell.setParentIndex(0);
+        });
+    }
+
+    public int getMazeIndexFromFileInputIndex(int fileIndex) {
+        return (fileIndex / (getWidth() * 2 + 1) / 2) * getWidth() + (fileIndex % (getWidth() * 2 + 1) / 2);
+    }
+
     @Override
     public String toString() {
         final int truncateAfter = 3;
@@ -243,9 +260,11 @@ public class Maze {
     public class Cell {
         private byte adjacents;
         private int parentIndex;
+        private boolean visited;
 
         protected Cell(byte adjacents) {
             this.adjacents = adjacents;
+            this.visited = false;
         }
 
         protected byte getAdjacents() {
@@ -258,6 +277,14 @@ public class Maze {
 
         protected void setParentIndex(int parentIndex) {
             this.parentIndex = parentIndex;
+        }
+        
+        public boolean isVisited() {
+            return this.visited;
+        }
+
+        public void setVisited(boolean visited) {
+            this.visited = visited;
         }
 
         @Override
