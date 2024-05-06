@@ -48,14 +48,14 @@ public class Maze {
             for (int j = 1; j < fw; j += 2) {
                 int cellIndex = i * fw + j;
                 char cell = maze_InputFormat.getCharAt(cellIndex);
-                if (cell != Maze_InputFormat.PATH) {
+                if (cell != Maze_InputFormat.PATH && cell != Maze_InputFormat.END && cell != Maze_InputFormat.START) {
                     throw new IllegalStateException(
                         "maze in input format corrupted"
                     );
                 }
-                char adjN = maze_InputFormat.getCharAt(cellIndex - fh);
+                char adjN = maze_InputFormat.getCharAt(cellIndex - fw);
                 char adjE = maze_InputFormat.getCharAt(cellIndex + 1);
-                char adjS = maze_InputFormat.getCharAt(cellIndex + fh);
+                char adjS = maze_InputFormat.getCharAt(cellIndex + fw);
                 char adjW = maze_InputFormat.getCharAt(cellIndex - 1);
 
                 byte cellAdjacencies = 0;

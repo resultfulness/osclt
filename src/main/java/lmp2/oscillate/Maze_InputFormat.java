@@ -207,7 +207,7 @@ public class Maze_InputFormat {
     }
 
     public boolean canBeStartEndIndex(int index) {
-        return canBePath(index);
+        return index / getFileWidth() % 2 == 1 && index % getFileWidth() % 2 == 1;
     }
 
     public boolean isIndexExternalWall(int index) {
