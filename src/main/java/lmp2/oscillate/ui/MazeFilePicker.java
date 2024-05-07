@@ -52,6 +52,10 @@ public class MazeFilePicker extends JPanel implements ActionListener {
             App.config.getIsInputFileBinary()
         );
     }
+    
+    public void nullifyLabel() {
+        this.fileNameLabel.setText("Selected file: NONE");
+    }
 
     @Override
     public void actionPerformed(ActionEvent event) {

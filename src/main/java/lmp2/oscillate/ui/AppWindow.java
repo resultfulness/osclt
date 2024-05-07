@@ -46,6 +46,7 @@ public class AppWindow implements ActionListener {
     private JButton generateButton;
     private GenerateInputArea generateInputArea;
     AlgorithmSelectionField algSelector;
+    private MazeFilePicker mazeFilePicker;
 
     private PathFinder pathFinder;
     private Maze mazeStruct;
@@ -115,7 +116,7 @@ public class AppWindow implements ActionListener {
             this.statusPanel, BorderLayout.NORTH
         );
 
-        MazeFilePicker mazeFilePicker = new MazeFilePicker(this);
+        this.mazeFilePicker = new MazeFilePicker(this);
         c.gridy = 0;
         filePanel.add(mazeFilePicker, c);
 
@@ -166,7 +167,12 @@ public class AppWindow implements ActionListener {
     }
 
     public AppWindow.Tool getSelectedTool() {
-        return this.toolSelector.getSelectedTool();
+        try {
+            return this.toolSelector.getSelectedTool();
+        }
+        catch (NullPointerException ex) {
+            return AppWindow.Tool.NONE;
+        }
     }
 
     public JPanel getMazeContainer(){
@@ -242,11 +248,13 @@ public class AppWindow implements ActionListener {
         }
         if(event.getSource() == this.generateButton) {
             try {
+                this.pathFinder.interrupt();
                 MazeGenerator generator = new MazeGenerator(this.generateInputArea.getMazeWidth(), this.generateInputArea.getMazeHeight());
                 this.mazeStruct = generator.generateMaze(this.generateInputArea.getMazeWallRemovalPercentage());
                 System.out.println(this.mazeStruct);
                 this.m.fromMaze(this.mazeStruct);
                 LogDialog.show("Maze generated successfully!", LogDialog.Level.INFO);
+                this.mazeFilePicker.nullifyLabel();
             } catch (IllegalArgumentException e) {
                 LogDialog.show(e.getMessage(), LogDialog.Level.ERROR);
             }

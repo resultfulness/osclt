@@ -22,13 +22,11 @@ public final class BFS extends PathFinder {
         this.solveQueue = new LinkedList<Integer>();
         this.isRunning = true;
         this.solveQueue.add(this.maze.getStartIndex());
-        Cell currentCell;
         do{
             if(!isRunning)
                 break;
+            System.out.println(this.solveQueue.size());
             Integer currentIndex = this.solveQueue.remove();
-            currentCell = this.maze.get(currentIndex);
-            currentCell.setVisited(true);
             this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(currentIndex));
             if(processAdjacent(currentIndex, Maze.NORTH_VALUE))
                 break;
@@ -83,6 +81,8 @@ public final class BFS extends PathFinder {
                 return false;
             }
             if(!adjacentCell.isVisited()){
+
+                adjacentCell.setVisited(true);
                 this.solveQueue.add(cellIndex + offset);
                 this.maze.setParentIndexAt(cellIndex + offset, cellIndex);
                 int offsetBetween = (this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex + offset) - this.maze_inputFormat.getInputIndexFromMazeIndex(cellIndex)) / 2;

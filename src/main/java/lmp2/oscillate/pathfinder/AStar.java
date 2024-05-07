@@ -48,13 +48,10 @@ public class AStar extends PathFinder {
         this.solveArray = new ArrayList<CellInfo>();
         this.isRunning = true;
         this.solveArray.add(new CellInfo(this.maze.getStartIndex(), 0, 0));
-        Cell currentCell;
         do{
             if(!isRunning)
                 break;
             CellInfo currentCellInfo = getMin();
-            currentCell = this.maze.get(currentCellInfo.cellIndex);
-            currentCell.setVisited(true);
             this.maze_inputFormat.mapCharAt(Maze_InputFormat.PATH_TRACE, this.maze_inputFormat.getInputIndexFromMazeIndex(currentCellInfo.cellIndex));
             if(processAdjacent(currentCellInfo, Maze.NORTH_VALUE))
                 break;
@@ -109,7 +106,7 @@ public class AStar extends PathFinder {
                 return false;
             }
             if(!adjacentCell.isVisited()){
-                
+                adjacentCell.setVisited(true);
                 this.solveArray.add(new CellInfo(cellInfo.cellIndex + offset, cellInfo.distanceFromSource + 1, 
                     this.useEuclidianCalc ? calculateEuclidian(cellInfo.cellIndex) : calculateManhattan(cellInfo.cellIndex)));
                     this.maze.setParentIndexAt(cellInfo.cellIndex + offset, cellInfo.cellIndex);
